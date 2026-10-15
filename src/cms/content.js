@@ -101,4 +101,21 @@ export function cardHtml(a) {
     "</a></article>";
 }
 
+/** "#Implantate, Zahnersatz #Kinder" → ["Implantate", "Zahnersatz", "Kinder"] */
+export function parseTags(input) {
+  const out = [];
+  String(input || "").split(/[\s,;]+/).forEach(function (t) {
+    t = t.replace(/^#+/, "").replace(/[^0-9A-Za-zÄÖÜäöüß_-]/g, "");
+    if (t && out.indexOf(t) === -1) out.push(t.slice(0, 40));
+  });
+  return out.slice(0, 12);
+}
+
+export function tagsHtml(tags) {
+  if (!tags || !tags.length) return "";
+  return '<div class="post-tags">' + tags.map(function (t) {
+    return '<a href="ratgeber.html?tag=' + encodeURIComponent(t) + '">#' + escapeHtml(t) + "</a>";
+  }).join("") + "</div>";
+}
+
 export const CATEGORIES = ["Vorsorge", "Zahnersatz", "Implantologie", "Angstfrei", "Kinder", "Ästhetik", "Praxis-News"];

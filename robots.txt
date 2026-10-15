@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://contactnasriimen-ctrl.github.io/klar-zahn/sitemap.xml

@@ -36,7 +36,7 @@ export function initLab() {
   /* Laser-Scanring, der am Implantat entlangfährt */
   const scan = new THREE.Mesh(
     new THREE.TorusGeometry(0.42, 0.01, 8, 120),
-    new THREE.MeshBasicMaterial({ color: 0x8ee6bd, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.MeshBasicMaterial({ color: 0x1b7553, transparent: true, opacity: 0.85, depthWrite: false })
   );
   scan.rotation.x = Math.PI / 2;
   rig.add(scan);
@@ -44,7 +44,7 @@ export function initLab() {
   rig.add(scanGlow);
 
   const lightA = makeGlowLight(0x8ee6bd, 20, 8);
-  const lightB = makeGlowLight(0xffffff, 10, 8);
+  const lightB = makeGlowLight(0x5eb593, 10, 8);
   scene.add(lightA, lightB);
   const spark = makeSparkle(m.mint, 0.16);
   rig.add(spark);

@@ -45,6 +45,30 @@ npm run build
 ```
 Cela régénère `assets/js/scenes3d.js`, `assets/js/blog.js` et `assets/js/admin.js`.
 
+## Photos
+Les photos réelles (`assets/img/photos/`) viennent d'**Unsplash** (licence Unsplash : usage commercial gratuit, sans attribution obligatoire).
+Ce sont des photos d'ambiance (sourires, soins, labo) : **à remplacer dès que possible par les vraies photos du cabinet**
+(même nom de fichier = remplacement automatique). Aucune photo de stock n'est présentée comme étant le docteur.
+
+| Fichier | Où | Source Unsplash |
+|---|---|---|
+| hero-laechelnde-patientin.webp | Hero | photo-1617812191081-2a24e3f30e45 |
+| persoenliche-beratung.webp | Hero (bulle), bandeau | photo-1777331903190-341a3dd0441b |
+| entspannte-behandlung.webp | Angstfrei, article | photo-1663755489920-5e09f66d011a |
+| professionelle-zahnreinigung.webp | Bento PZR, article | photo-1681939278218-a755fb2bf2d3 |
+| kinderzahnheilkunde.webp | Bento Kinder | photo-1593183230686-69876b0cb240 |
+| aesthetik-laecheln.webp | Bento Ästhetik | photo-1567516364473-233c4b6fcfbe |
+| meisterlabor-handarbeit.webp | Meisterlabor | photo-1776406987595-ba14f3510c07 |
+| zahnimplantat-krone.webp | Article implant | photo-1771442873035-474765b40ac6 |
+| strahlendes-laecheln.webp, kind-beim-zahnarzt.webp, kontrolle-beim-zahnarzt.webp | Bandeau photos | photo-1494790108377-be9c29b29330, photo-1758205307836-0829c799890b, photo-1681939282781-341ac4f61996 |
+
+## SEO et hashtags
+- Hashtags cliquables en bas de page + hashtags par article (champ « Hashtags » dans le Praxis-Login). Listes pour les réseaux : [HASHTAGS.md](HASHTAGS.md).
+- Données structurées Google : cabinet dentaire (prestations, horaires, zone desservie), FAQ, articles.
+- `sitemap.xml` et `robots.txt` fournis.
+- **Important : le site est encore en `noindex`** (Google ne l'indexe pas). Le retirer de `index.html` et `ratgeber.html`
+  une fois l'Impressum complété — idéalement sur le domaine définitif (puis mettre à jour `canonical`, `sitemap.xml` et `robots.txt`).
+
 ## Photo du docteur
 Déposer `images/mikel-salloum.jpg` (vertical 4:5, ≥ 1000 px de large, JPG ~80 %).
 Tant qu'elle manque, le cadre affiche la dent 3D et le monogramme « MS ».

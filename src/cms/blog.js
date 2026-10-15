@@ -1,7 +1,32 @@
 /* Ratgeber auf der Website: neueste Artikel auf der Startseite, Übersicht und Artikelansicht auf ratgeber.html. */
 import { configured, listPublished, getPublished } from "./firebase.js";
 import { STARTER_ARTICLES } from "./starter.js";
-import { sanitize, escapeHtml, formatDate, readMinutes, cardHtml } from "./content.js";
+import { sanitize, escapeHtml, formatDate, readMinutes, cardHtml, tagsHtml } from "./content.js";
+
+const SITE = "https://contactnasriimen-ctrl.github.io/klar-zahn/";
+
+function setMeta(name, content) {
+  let m = document.querySelector('meta[name="' + name + '"]');
+  if (!m) { m = document.createElement("meta"); m.setAttribute("name", name); document.head.appendChild(m); }
+  m.setAttribute("content", content);
+}
+
+function addArticleLd(a, cover) {
+  const ld = {
+    "@context": "https://schema.org", "@type": "Article",
+    headline: a.title, description: a.excerpt || "",
+    datePublished: new Date(a.publishedAt || Date.now()).toISOString(),
+    author: { "@type": "Person", name: a.author || "Mikel Salloum" },
+    publisher: { "@type": "Dentist", name: "Klar Zahn – Zahnmedizin & Zahntechnik", telephone: "+49 6105 23604" },
+    keywords: (a.tags || []).join(", "),
+    mainEntityOfPage: SITE + "ratgeber.html?artikel=" + encodeURIComponent(a.id)
+  };
+  if (cover && cover.indexOf("data:") !== 0) ld.image = SITE + cover;
+  const s = document.createElement("script");
+  s.type = "application/ld+json";
+  s.textContent = JSON.stringify(ld);
+  document.head.appendChild(s);
+}
 
 function bindTilt(root) {
   if (window.KZ && window.KZ.bindTilt) root.querySelectorAll("[data-tilt]").forEach(window.KZ.bindTilt);
@@ -54,7 +79,10 @@ async function initPage() {
       articleView.innerHTML = '<div class="post-missing"><h1>Artikel nicht gefunden</h1><p>Dieser Artikel ist nicht (mehr) verfügbar.</p><a class="btn btn-glow" href="ratgeber.html">Zur Übersicht</a></div>';
       return;
     }
-    document.title = a.title + " | Ratgeber | Klar Zahn";
+    document.title = a.title + " | Ratgeber | Klar Zahn Mörfelden-Walldorf";
+    if (a.excerpt) setMeta("description", a.excerpt);
+    if (a.tags && a.tags.length) setMeta("keywords", a.tags.join(", "));
+    addArticleLd(a, a.cover || a.coverThumb || "");
     const html = sanitize(a.html || "");
     const cover = a.cover || a.coverThumb || "";
     articleView.innerHTML =
@@ -68,14 +96,23 @@ async function initPage() {
       "</header>" +
       (cover ? '<div class="post-hero tone-' + escapeHtml(a.tone || "night") + '"><img class="' + (a.coverFit === "contain" ? "fit-contain" : "fit-cover") + '" src="' + escapeHtml(cover) + '" alt=""></div>' : "") +
       '<div class="prose">' + html + "</div>" +
+      tagsHtml(a.tags) +
       '<aside class="post-cta"><div><strong>Fragen zu diesem Thema?</strong><span>Wir beraten Sie gerne persönlich in unserer Praxis.</span></div>' +
       '<a class="btn btn-glow" href="tel:+49610523604"><svg class="ico"><use href="#i-phone"/></svg>06105 / 23604</a></aside>' +
       '<p class="post-author">Veröffentlicht von ' + escapeHtml(a.author || "Praxis Klar Zahn") + "</p>";
     return;
   }
 
-  const list = await loadList();
+  let list = await loadList();
   grid.setAttribute("aria-busy", "false");
+  const tag = params.get("tag");
+  if (tag && list) {
+    list = list.filter(function (a) { return (a.tags || []).some(function (t) { return t.toLowerCase() === tag.toLowerCase(); }); });
+    const head = document.createElement("div");
+    head.className = "post-tags tag-head";
+    head.innerHTML = '<span class="tag-current">#' + escapeHtml(tag) + '</span><a href="ratgeber.html">Alle Artikel anzeigen</a>';
+    grid.parentNode.insertBefore(head, grid);
+  }
   if (!list || !list.length) {
     grid.innerHTML = "";
     empty.hidden = false;

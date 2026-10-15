@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendP
 import { collection, getDocs, doc, getDoc, writeBatch } from "firebase/firestore/lite";
 import { configured, app, db, ARTICLES, BODIES } from "./firebase.js";
 import { STARTER_ARTICLES } from "./starter.js";
-import { sanitize, escapeHtml, formatDate, readMinutes, slugify, articleUrl, CATEGORIES } from "./content.js";
+import { sanitize, escapeHtml, formatDate, readMinutes, slugify, articleUrl, CATEGORIES, parseTags } from "./content.js";
 import { readImage, makeCover, makeInline, kb } from "./images.js";
 
 const $ = function (s, c) { return (c || document).querySelector(s); };
@@ -178,7 +178,7 @@ function start() {
       STARTER_ARTICLES.forEach(function (a) {
         batch.set(doc(db, ARTICLES, a.id), {
           title: a.title, category: a.category, excerpt: a.excerpt, coverThumb: a.cover, coverFit: a.coverFit, tone: a.tone,
-          status: "published", publishedAt: a.publishedAt, updatedAt: now, author: a.author
+          status: "published", publishedAt: a.publishedAt, updatedAt: now, author: a.author, tags: a.tags || []
         });
         batch.set(doc(db, BODIES, a.id), { status: "published", html: a.html, cover: a.cover });
       });
@@ -196,6 +196,7 @@ function start() {
   const catIn = $("#post-category");
   const dateIn = $("#post-date");
   const authorIn = $("#post-author");
+  const tagsIn = $("#post-tags");
   catIn.innerHTML = CATEGORIES.map(function (c) { return "<option>" + escapeHtml(c) + "</option>"; }).join("");
   try { document.execCommand("defaultParagraphSeparator", false, "p"); } catch (e) { /* ältere Browser */ }
 
@@ -212,6 +213,7 @@ function start() {
     catIn.value = meta && meta.category ? meta.category : CATEGORIES[0];
     dateIn.value = toDateInput(meta ? meta.publishedAt : Date.now());
     authorIn.value = meta && meta.author ? meta.author : "Mikel Salloum";
+    tagsIn.value = meta && meta.tags ? meta.tags.map(function (t) { return "#" + t; }).join(" ") : "#ZahnarztMörfeldenWalldorf";
     cover = { cover: "", thumb: meta ? meta.coverThumb || "" : "", fit: meta && meta.coverFit === "contain" ? "contain" : "cover" };
     editor.innerHTML = meta ? "<p>Inhalt wird geladen …</p>" : "<p></p>";
     $("[data-editor-title]").textContent = meta ? "Artikel bearbeiten" : "Neuer Artikel";
@@ -254,7 +256,7 @@ function start() {
     return size;
   }
 
-  [titleIn, excerptIn, catIn, dateIn, authorIn].forEach(function (el) {
+  [titleIn, excerptIn, catIn, dateIn, authorIn, tagsIn].forEach(function (el) {
     el.addEventListener("input", function () { dirty = true; if (el === excerptIn) $("[data-excerpt-count]").textContent = excerptIn.value.length + " / 220"; });
   });
   editor.addEventListener("input", function () { dirty = true; updateSize(); });
@@ -381,6 +383,7 @@ function start() {
         publishedAt: dateMs,
         updatedAt: Date.now(),
         author: authorIn.value.trim() || "Mikel Salloum",
+        tags: parseTags(tagsIn.value),
         readMinutes: readMinutes(html)
       };
       const batch = writeBatch(db);
@@ -427,7 +430,8 @@ function start() {
       "<h1>" + escapeHtml(titleIn.value || "Ohne Titel") + "</h1>" +
       (excerptIn.value ? '<p class="post-lead">' + escapeHtml(excerptIn.value) + "</p>" : "") +
       (src ? '<div class="post-hero tone-night"><img class="' + (cover.fit === "contain" ? "fit-contain" : "fit-cover") + '" src="' + escapeHtml(src) + '" alt=""></div>' : "") +
-      '<div class="prose">' + html + "</div>";
+      '<div class="prose">' + html + "</div>" +
+      (parseTags(tagsIn.value).length ? '<div class="post-tags">' + parseTags(tagsIn.value).map(function (t) { return "<a>#" + escapeHtml(t) + "</a>"; }).join("") + "</div>" : "");
     modal.hidden = false;
     document.documentElement.style.overflow = "hidden";
   });

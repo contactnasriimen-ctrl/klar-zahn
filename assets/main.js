@@ -26,7 +26,7 @@
   /* ---------- Header (hell/dunkel je nach Abschnitt) + Fortschritt ---------- */
   var header = $("[data-header]");
   var bar = $("[data-progress]");
-  var darkSections = $$(".hero, .page-hero, .lab, .calm, .contact, .site-footer");
+  var darkSections = $$(".site-footer");
   tasks.push(function () {
     var max = document.documentElement.scrollHeight - window.innerHeight;
     if (bar) bar.style.setProperty("--p", max > 0 ? (window.scrollY / max).toFixed(4) : 0);
@@ -284,6 +284,7 @@
     var now = berlinNow();
     var slot = (schedule[now.day] || []).filter(function (s) { return now.min >= s[0] && now.min < s[1]; })[0];
     var text = "Geschlossen";
+    var shortText = "Heute geschlossen";
     if (slot) {
       text = "Jetzt geöffnet · bis " + fmt(slot[1]) + " Uhr";
     } else {
@@ -292,6 +293,7 @@
         var next = (schedule[day] || []).filter(function (s) { return i > 0 || s[0] > now.min; });
         if (next.length) {
           text = "Geschlossen · öffnet " + (i === 0 ? "heute" : i === 1 ? "morgen" : "am " + DAY_NAMES[day]) + " um " + fmt(next[0][0]) + " Uhr";
+          shortText = "Öffnet " + (i === 0 ? "heute" : i === 1 ? "morgen" : DAY_NAMES[day]) + " um " + fmt(next[0][0]);
           break;
         }
       }
@@ -304,6 +306,7 @@
       pill.classList.toggle("is-closed", !slot);
       pill.hidden = false;
     }
+    $$("[data-open-short]").forEach(function (el) { el.textContent = slot ? "Jetzt geöffnet · bis " + fmt(slot[1]) : shortText; });
     $$("[data-open-status]").forEach(function (el) { el.textContent = text + ". Termine auch nach Vereinbarung."; });
   }
 

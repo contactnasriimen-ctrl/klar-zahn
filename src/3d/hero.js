@@ -30,7 +30,7 @@ export function initHero() {
   const m = makeMaterials();
 
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.set(0, 0, 8);
+  camera.position.set(0, 0, 9.4);
 
   const rig = new THREE.Group();
   scene.add(rig);
@@ -38,7 +38,7 @@ export function initHero() {
   const halo = makeHalo(0x8ee6bd, 5.2, 0.42);
   halo.position.z = -1.2;
   rig.add(halo);
-  const haloCore = makeHalo(0xffffff, 2.6, 0.18);
+  const haloCore = makeHalo(0xffffff, 2.6, 0.5);
   haloCore.position.z = -0.9;
   rig.add(haloCore);
 
@@ -52,7 +52,7 @@ export function initHero() {
 
   const orbitA = makeOrbit(1.9, 0x8ee6bd, 0.45);
   orbitA.rotation.set(1.2, 0.3, 0);
-  const orbitB = makeOrbit(2.25, 0xffffff, 0.18);
+  const orbitB = makeOrbit(2.25, 0x035444, 0.16);
   orbitB.rotation.set(1.45, -0.5, 0.4);
   rig.add(orbitA, orbitB);
 
@@ -76,7 +76,7 @@ export function initHero() {
   scene.add(burst);
   const shock = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.012, 8, 120),
-    new THREE.MeshBasicMaterial({ color: 0x8ee6bd, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending })
+    new THREE.MeshBasicMaterial({ color: 0x3f9c78, transparent: true, opacity: 0, depthWrite: false })
   );
   scene.add(shock);
 
@@ -85,7 +85,7 @@ export function initHero() {
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.z = w < 420 ? 8.8 : 8;
+    camera.position.z = w < 300 ? 10.2 : 9.4;
     camera.updateProjectionMatrix();
   }
   resize();

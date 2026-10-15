@@ -276,7 +276,7 @@ export function makeMoon(material) {
 export function makeParticles(count, radius) {
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const mint = new THREE.Color(0x7fe0b4), white = new THREE.Color(0xffffff);
+  const mint = new THREE.Color(0x5eb593), white = new THREE.Color(0x1b7553);
   for (let i = 0; i < count; i++) {
     const r = radius * (0.55 + Math.random() * 0.6);
     const th = Math.random() * Math.PI * 2;
@@ -301,8 +301,8 @@ export function makeParticles(count, radius) {
   ctx.fillRect(0, 0, 64, 64);
   const tex = new THREE.CanvasTexture(canvas);
   const mat = new THREE.PointsMaterial({
-    size: 0.07, map: tex, vertexColors: true, transparent: true, depthWrite: false,
-    blending: THREE.AdditiveBlending, sizeAttenuation: true
+    size: 0.06, map: tex, vertexColors: true, transparent: true, opacity: 0.6, depthWrite: false,
+    blending: THREE.NormalBlending, sizeAttenuation: true
   });
   return new THREE.Points(geo, mat);
 }
@@ -337,7 +337,7 @@ export function makeGlowTexture() {
 export function makeHalo(color, scale, opacity) {
   const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
     map: makeGlowTexture(), color: color, transparent: true, opacity: opacity == null ? 0.6 : opacity,
-    blending: THREE.AdditiveBlending, depthWrite: false
+    blending: THREE.NormalBlending, depthWrite: false
   }));
   sprite.scale.setScalar(scale);
   return sprite;
@@ -360,8 +360,8 @@ export function makeBurst(count) {
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   const mat = new THREE.PointsMaterial({
-    size: 0.12, map: makeGlowTexture(), color: 0xb9f5d8, transparent: true, opacity: 0,
-    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+    size: 0.12, map: makeGlowTexture(), color: 0x3f9c78, transparent: true, opacity: 0,
+    depthWrite: false, blending: THREE.NormalBlending, sizeAttenuation: true
   });
   const points = new THREE.Points(geo, mat);
   const velocities = new Float32Array(count * 3);
