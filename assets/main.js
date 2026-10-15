@@ -209,14 +209,9 @@
     if (!reduce && labSection) labSection.classList.add("lab-js");
     tasks.push(function (vh) {
       var r = labStory.getBoundingClientRect();
-      var p = clamp((vh * 0.5 - r.top) / Math.max(1, r.height - vh * 0.5), 0, 1);
+      var p = clamp((vh * 0.85 - r.top) / (r.height + vh * 0.3), 0, 1);
       labStory.style.setProperty("--p", p.toFixed(3));
-      var active = 0, best = Infinity;
-      chapters.forEach(function (c, i) {
-        var cr = c.getBoundingClientRect();
-        var d = Math.abs(cr.top + cr.height / 2 - vh * 0.5);
-        if (d < best) { best = d; active = i; }
-      });
+      var active = Math.min(chapters.length - 1, Math.floor(p * chapters.length));
       chapters.forEach(function (c, i) { c.classList.toggle("is-active", i === active); });
       shows.forEach(function (s) { s.classList.toggle("is-show", parseInt(s.getAttribute("data-step-show"), 10) <= active); });
     });
@@ -334,6 +329,23 @@
         navigator.clipboard.writeText(value).then(function () { done("Kopiert"); }, function () { select(); done("Nummer markiert"); });
       } else { select(); done("Nummer markiert"); }
     });
+  }
+
+  /* ---------- Hero: Tiefenebenen folgen der Maus ---------- */
+  var heroSection = $(".hero");
+  if (heroSection && finePointer && !reduce) {
+    var hx = 0, hy = 0, hTx = 0, hTy = 0, hRaf = null;
+    var hStep = function () {
+      hx += (hTx - hx) * 0.08; hy += (hTy - hy) * 0.08;
+      heroSection.style.setProperty("--px", hx.toFixed(3));
+      heroSection.style.setProperty("--py", hy.toFixed(3));
+      hRaf = Math.abs(hTx - hx) + Math.abs(hTy - hy) > 0.002 ? window.requestAnimationFrame(hStep) : null;
+    };
+    window.addEventListener("pointermove", function (e) {
+      if (window.scrollY > heroSection.offsetHeight) return;
+      hTx = e.clientX / window.innerWidth - 0.5; hTy = e.clientY / window.innerHeight - 0.5;
+      if (!hRaf) hRaf = window.requestAnimationFrame(hStep);
+    }, { passive: true });
   }
 
   /* ---------- Glühwürmchen in dunklen Abschnitten ---------- */
