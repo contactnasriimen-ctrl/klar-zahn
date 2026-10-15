@@ -449,6 +449,108 @@
     }, { passive: true });
   }
 
+  /* ---------- Wörter der Überschriften gleiten herein ---------- */
+  if (!reduce && "IntersectionObserver" in window) {
+    var splitHeads = $$(".section-head h2, .about-copy h2, .faq-intro h2, .calm-copy h2, .contact-head h2");
+    var splitIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-split-in"); splitIO.unobserve(en.target); } });
+    }, { threshold: 0.3 });
+    splitHeads.forEach(function (h) {
+      var n = 0;
+      h.setAttribute("aria-label", h.textContent.replace(/\s+/g, " ").trim());
+      (function walk(node) {
+        Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+          if (c.nodeType === 1) { walk(c); return; }
+          if (c.nodeType !== 3 || !c.textContent.trim()) return;
+          var frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+            var w = document.createElement("span"); w.className = "wd"; w.setAttribute("aria-hidden", "true");
+            var inner = document.createElement("span"); inner.textContent = part; inner.style.setProperty("--i", n++);
+            w.appendChild(inner); frag.appendChild(w);
+          });
+          c.replaceWith(frag);
+        });
+      })(h);
+      h.classList.add("is-split");
+      splitIO.observe(h);
+    });
+  }
+
+  /* ---------- Scroll-Tempo: Bänder neigen sich, Typo-Band beschleunigt ---------- */
+  var skewEls = $$(".tapes, .ribbon");
+  var kinRows = $$("[data-kinetic]");
+  if (!reduce && (skewEls.length || kinRows.length)) {
+    var lastY = window.scrollY, vel = 0, kinX = kinRows.map(function () { return 0; }), kinVisible = false;
+    if ("IntersectionObserver" in window && kinRows.length) {
+      new IntersectionObserver(function (en) { kinVisible = en[0].isIntersecting; }).observe(kinRows[0].parentElement);
+    }
+    (function speedLoop() {
+      var y = window.scrollY;
+      vel += ((y - lastY) - vel) * 0.18;
+      lastY = y;
+      var skew = Math.max(-7, Math.min(7, vel * 0.12));
+      skewEls.forEach(function (el) { el.style.setProperty("--skew", skew.toFixed(2) + "deg"); });
+      if (kinVisible) {
+        kinRows.forEach(function (row, i) {
+          var dir = parseFloat(row.getAttribute("data-kinetic"));
+          var track = row.firstElementChild, third = track.scrollWidth / 3;
+          kinX[i] -= dir * (0.6 + Math.min(14, Math.abs(vel) * 0.35));
+          if (kinX[i] <= -third) kinX[i] += third;
+          if (kinX[i] > 0) kinX[i] -= third;
+          track.style.transform = "translateX(" + kinX[i].toFixed(1) + "px)";
+        });
+      }
+      window.requestAnimationFrame(speedLoop);
+    })();
+  }
+
+  /* ---------- Runder Termin-Button erscheint nach dem Hero ---------- */
+  var floatCta = $("[data-float-cta]"), heroEl = $(".hero"), contactEl = $("#kontakt");
+  if (floatCta && heroEl) {
+    tasks.push(function (vh) {
+      var past = heroEl.getBoundingClientRect().bottom < vh * 0.3;
+      var atContact = contactEl && contactEl.getBoundingClientRect().top < vh * 0.7;
+      floatCta.classList.toggle("is-visible", past && !atContact);
+    });
+  }
+
+  /* ---------- Eigener Cursor-Ring mit Beschriftung ---------- */
+  if (finePointer && !reduce) {
+    var ring = document.createElement("div");
+    ring.className = "cursor-ring";
+    ring.setAttribute("aria-hidden", "true");
+    ring.innerHTML = "<span></span>";
+    document.body.appendChild(ring);
+    var ringLabel = ring.firstChild, rx = -100, ry = -100, rtx = -100, rty = -100, ringOn = false;
+    var labels = [[".hero-3d", "Drehen"], [".post-card", "Lesen"], [".tile", "Entdecken"], [".map-card", "Route"], [".rb-item", ""], ["a, button, summary", ""]];
+    window.addEventListener("pointermove", function (e) {
+      rtx = e.clientX; rty = e.clientY;
+      var label = null;
+      for (var i = 0; i < labels.length; i++) { if (e.target.closest && e.target.closest(labels[i][0])) { label = labels[i][1]; break; } }
+      ring.classList.toggle("is-hover", label !== null);
+      ring.classList.toggle("has-label", !!label);
+      if (label) ringLabel.textContent = label;
+      if (!ringOn) { ringOn = true; rx = rtx; ry = rty; ring.classList.add("is-on"); (function follow() {
+        rx += (rtx - rx) * 0.2; ry += (rty - ry) * 0.2;
+        ring.style.transform = "translate(" + rx.toFixed(1) + "px," + ry.toFixed(1) + "px)";
+        if (ringOn) window.requestAnimationFrame(follow);
+      })(); }
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { ringOn = false; ring.classList.remove("is-on"); });
+    window.addEventListener("scroll", function () {
+      if (!ringOn) return;
+      var el = document.elementFromPoint(rtx, rty), label = null;
+      for (var i = 0; el && i < labels.length; i++) { if (el.closest(labels[i][0])) { label = labels[i][1]; break; } }
+      ring.classList.toggle("is-hover", label !== null);
+      ring.classList.toggle("has-label", !!label);
+      if (label) ringLabel.textContent = label;
+    }, { passive: true });
+    window.addEventListener("pointerdown", function () { ring.classList.add("is-down"); });
+    window.addEventListener("pointerup", function () { ring.classList.remove("is-down"); });
+  }
+
   /* ---------- Jahr ---------- */
   $$("[data-year]").forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 

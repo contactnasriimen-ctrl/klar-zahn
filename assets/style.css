@@ -1409,3 +1409,107 @@ section[id], [id^="leistung-"] { scroll-margin-top: 100px; }
 .hero-3d.is-touched .hero-3d-hint { opacity: 0; }
 @keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @media (hover: none), (prefers-reduced-motion: reduce) { .sparkle-trail { display: none; } }
+
+/* =========================================================================
+   Version 9: Signatur-Design – Cursor-Ring, gleitende Wörter, kinetische Typo,
+   runder Termin-Button, Scroll-Neigung, „Made by OverTech“
+   ========================================================================= */
+
+/* Wörter gleiten aus einer Maske */
+.is-split .wd { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .06em .14em 0; margin: 0 -.06em -.14em 0; }
+.is-split .wd > span { display: inline-block; transform: translateY(108%) rotate(4deg); transform-origin: 0 100%; transition: transform .9s var(--ease-out); transition-delay: calc(var(--i, 0) * 55ms); }
+.is-split.is-split-in .wd > span { transform: none; }
+
+/* Neigung nach Scroll-Tempo */
+.tapes { transform: skewY(var(--skew, 0deg)); transition: transform .1s linear; }
+.ribbon { transform: skewY(calc(var(--skew, 0deg) * .6)); }
+
+/* Kinetische Typo */
+.kinetic { position: relative; overflow: clip; padding-block: clamp(1.6rem, 3.5vw, 2.6rem); background: linear-gradient(180deg, var(--paper), var(--mist)); display: grid; gap: 6px; }
+.kinetic-row { overflow: hidden; white-space: nowrap; }
+.kinetic-track { display: inline-flex; will-change: transform; }
+.kinetic-track span {
+  display: inline-flex; align-items: center; gap: .45em; padding-right: .45em;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 1.4rem + 5vw, 6.2rem); line-height: 1.05; letter-spacing: -0.04em;
+}
+.kinetic-track span::after {
+  content: ""; width: .42em; height: .42em; flex: none; background: linear-gradient(135deg, var(--glow), var(--mint));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c.6 5.4 4.6 9.4 10 10c-5.4.6-9.4 4.6-10 10c-.6-5.4-4.6-9.4-10-10c5.4-.6 9.4-4.6 10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c.6 5.4 4.6 9.4 10 10c-5.4.6-9.4 4.6-10 10c-.6-5.4-4.6-9.4-10-10c5.4-.6 9.4-4.6 10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.k-fill {
+  color: transparent; background: linear-gradient(100deg, var(--forest) 0%, var(--mint-ink) 50%, var(--mint) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  filter: drop-shadow(0 2px 0 #cfe9dc) drop-shadow(0 2px 0 #b7dccb) drop-shadow(0 16px 20px rgba(3, 84, 68, .14));
+}
+.k-out { color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--mint) 70%, transparent); }
+.kinetic-rev .kinetic-track span { font-size: clamp(1.8rem, 1rem + 3.4vw, 4.2rem); }
+
+/* Runder Termin-Button */
+.float-cta {
+  position: fixed; right: clamp(16px, 2.4vw, 32px); bottom: clamp(16px, 2.4vw, 32px); z-index: 85;
+  display: grid; place-items: center; width: 118px; height: 118px; border-radius: 50%; text-decoration: none;
+  background: color-mix(in srgb, var(--paper) 86%, transparent); border: 1px solid var(--paper);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 24px 50px -22px color-mix(in srgb, var(--forest) 65%, transparent);
+  opacity: 0; scale: .6; pointer-events: none;
+  transition: opacity .5s var(--ease-out), scale .6s var(--ease-out), box-shadow .3s ease;
+}
+.float-cta.is-visible { opacity: 1; scale: 1; pointer-events: auto; }
+.float-cta:hover { scale: 1.08; box-shadow: 0 0 0 8px color-mix(in srgb, var(--glow) 30%, transparent), 0 24px 50px -22px color-mix(in srgb, var(--forest) 70%, transparent); }
+.float-cta-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 14s linear infinite; }
+.float-cta-ring text { font-family: var(--font-body); font-weight: 700; font-size: 11.5px; letter-spacing: 1.4px; fill: var(--forest); }
+.float-cta-core { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: var(--night); background: linear-gradient(135deg, var(--glow), var(--mint)); box-shadow: inset 0 2px 0 color-mix(in srgb, var(--paper) 60%, transparent); }
+.float-cta-core .ico { width: 24px; height: 24px; }
+
+/* Cursor-Ring */
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 97; pointer-events: none;
+  width: 0; height: 0; opacity: 0; transition: opacity .3s ease;
+}
+.cursor-ring.is-on { opacity: 1; }
+.cursor-ring::before {
+  content: ""; position: absolute; left: -16px; top: -16px; width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--forest) 55%, transparent);
+  transition: transform .35s var(--ease-out), background-color .3s ease, border-color .3s ease;
+}
+.cursor-ring.is-hover::before { transform: scale(1.6); border-color: var(--mint); background: color-mix(in srgb, var(--glow) 18%, transparent); }
+.cursor-ring.has-label::before { transform: scale(2.7); border-color: transparent; background: var(--forest); }
+.cursor-ring.is-down::before { transform: scale(.8); }
+.cursor-ring span {
+  position: absolute; left: 0; top: 0; translate: -50% -50%; opacity: 0; transition: opacity .25s ease;
+  color: var(--paper); font-size: .72rem; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
+}
+.cursor-ring.has-label span { opacity: 1; }
+
+/* Made by OverTech */
+.footer-bottom { align-items: center; }
+.made-by {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px 7px 10px; border-radius: 999px;
+  border: 1px solid var(--on-dark-line); color: var(--on-dark-muted); text-decoration: none; font-size: .86rem;
+  transition: border-color .3s ease, color .3s ease, background-color .3s ease;
+}
+.made-by strong { color: var(--on-dark); font-family: var(--font-display); font-weight: 600; letter-spacing: -.01em; }
+.made-by:hover { border-color: var(--glow); background: color-mix(in srgb, var(--glow) 12%, transparent); color: var(--on-dark); }
+.made-by-spark { width: 14px; height: 14px; background: linear-gradient(135deg, var(--glow), #e2b453); animation: spin 6s linear infinite;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c.6 5.4 4.6 9.4 10 10c-5.4.6-9.4 4.6-10 10c-.6-5.4-4.6-9.4-10-10c5.4-.6 9.4-4.6 10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c.6 5.4 4.6 9.4 10 10c-5.4.6-9.4 4.6-10 10c-.6-5.4-4.6-9.4-10-10c5.4-.6 9.4-4.6 10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+@media (max-width: 760px) {
+  .float-cta { display: none; }
+}
+@media (hover: none) {
+  .cursor-ring { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-split .wd > span { transform: none; }
+  .tapes, .ribbon { transform: none; }
+}
+
+/* Verlaufsschrift bleibt nach dem Wort-Split sichtbar */
+.is-split em { background: none !important; color: var(--mint-ink) !important; }
+.lab .is-split em .wd > span, .calm .is-split em .wd > span, .contact .is-split em .wd > span {
+  color: transparent; background: linear-gradient(100deg, var(--mint-ink) 0%, var(--mint) 55%, var(--forest) 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
