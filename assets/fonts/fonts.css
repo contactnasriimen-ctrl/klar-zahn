@@ -1,0 +1,15 @@
+/* Selbst gehostete Schriften (DSGVO: keine Verbindung zu Google-Servern) */
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("figtree-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lexend";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("lexend-latin.woff2") format("woff2");
+}
