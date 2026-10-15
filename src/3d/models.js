@@ -314,3 +314,83 @@ export function makeOrbit(radius, color, opacity) {
   );
   return mesh;
 }
+
+/** Weiche, runde Lichttextur (für Halos, Lichtkugeln und Funken). */
+var glowTexture = null;
+export function makeGlowTexture() {
+  if (glowTexture) return glowTexture;
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 128;
+  const ctx = canvas.getContext("2d");
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.25, "rgba(255,255,255,.6)");
+  g.addColorStop(0.6, "rgba(255,255,255,.12)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  glowTexture = new THREE.CanvasTexture(canvas);
+  glowTexture.colorSpace = THREE.SRGBColorSpace;
+  return glowTexture;
+}
+
+export function makeHalo(color, scale, opacity) {
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeGlowTexture(), color: color, transparent: true, opacity: opacity == null ? 0.6 : opacity,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  }));
+  sprite.scale.setScalar(scale);
+  return sprite;
+}
+
+/** Punktlicht mit sichtbarer Lichtkugel. */
+export function makeGlowLight(color, intensity, distance) {
+  const group = new THREE.Group();
+  const light = new THREE.PointLight(color, intensity, distance, 2);
+  const orb = makeHalo(color, 0.55, 0.95);
+  const core = makeHalo(0xffffff, 0.16, 1);
+  group.add(light, orb, core);
+  group.userData = { light: light, orb: orb };
+  return group;
+}
+
+/** Funkenregen (z. B. beim Klick auf den Zahn). */
+export function makeBurst(count) {
+  const positions = new Float32Array(count * 3);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.12, map: makeGlowTexture(), color: 0xb9f5d8, transparent: true, opacity: 0,
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+  });
+  const points = new THREE.Points(geo, mat);
+  const velocities = new Float32Array(count * 3);
+  let life = 0;
+  points.userData = {
+    fire: function (origin) {
+      for (let i = 0; i < count; i++) {
+        const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), sp = 1.6 + Math.random() * 2.6;
+        velocities[i * 3] = Math.sin(ph) * Math.cos(th) * sp;
+        velocities[i * 3 + 1] = Math.cos(ph) * sp + 0.6;
+        velocities[i * 3 + 2] = Math.sin(ph) * Math.sin(th) * sp;
+        positions[i * 3] = origin.x; positions[i * 3 + 1] = origin.y; positions[i * 3 + 2] = origin.z;
+      }
+      life = 1;
+      geo.attributes.position.needsUpdate = true;
+    },
+    update: function (dt) {
+      if (life <= 0) { mat.opacity = 0; return; }
+      life -= dt * 0.8;
+      for (let i = 0; i < count; i++) {
+        velocities[i * 3 + 1] -= dt * 2.2;
+        positions[i * 3] += velocities[i * 3] * dt;
+        positions[i * 3 + 1] += velocities[i * 3 + 1] * dt;
+        positions[i * 3 + 2] += velocities[i * 3 + 2] * dt;
+        velocities[i * 3] *= 0.985; velocities[i * 3 + 2] *= 0.985;
+      }
+      geo.attributes.position.needsUpdate = true;
+      mat.opacity = Math.max(0, life);
+    }
+  };
+  return points;
+}

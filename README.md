@@ -1,4 +1,4 @@
-# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 2)
+# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 3)
 
 Site vitrine statique (HTML/CSS/JS, sans framework) pour le cabinet dentaire de Mikel Salloum,
 Opelstraße 2, 64546 Mörfelden-Walldorf. Page d'accueil + Impressum + Datenschutz, en allemand.
@@ -16,6 +16,12 @@ En ligne : https://contactnasriimen-ctrl.github.io/klar-zahn/
   carte d'accès en perspective, horaires avec statut « Jetzt geöffnet / Geschlossen » (heure de Berlin).
 - Toutes les animations sont coupées si le visiteur a activé « réduire les animations ».
 
+## Ratgeber et Praxis-Login (nouveau)
+- Section « Ratgeber » sur l'accueil (3 derniers articles) + page `ratgeber.html` (liste, filtres, lecture d'un article).
+- `admin.html` (lien « Praxis-Login » en bas de page) : le docteur se connecte et écrit, publie, modifie ou supprime ses articles.
+- Stockage : Firebase (gratuit). **Configuration à faire une fois : voir [FIREBASE_SETUP.md](FIREBASE_SETUP.md).**
+  Tant qu'elle n'est pas faite, le site affiche 3 articles d'exemple.
+
 ## Aperçu local
 Double-cliquer sur `index.html` (aucun serveur nécessaire).
 
@@ -26,23 +32,24 @@ Double-cliquer sur `index.html` (aucun serveur nécessaire).
 | Horaires (Sprechzeiten) | `index.html` : tableau `data-hours-table` (texte **et** attribut `data-hours`) + bloc JSON-LD dans `<head>` |
 | Couleurs, typo, mise en page | `assets/style.css` (variables `:root` en haut) |
 | Animations et interactions | `assets/main.js` |
-| Scène 3D du hero | `src/3d/hero.js` et `src/3d/models.js`, puis reconstruire (voir ci-dessous) |
+| Scènes 3D (hero, implant du labo) | `src/3d/`, puis reconstruire (voir ci-dessous) |
+| Ratgeber / Praxis-Login | `src/cms/`, puis reconstruire ; config Firebase dans `assets/js/firebase-config.js` |
+| Styles du Praxis-Login | `assets/admin.css` |
 | Images 3D des prestations | `assets/img/3d/*.webp` |
 | Impressum / Datenschutz | `impressum.html`, `datenschutz.html` (champs en rouge à compléter) |
 
-### Reconstruire la 3D (seulement si `src/3d/` est modifié)
+### Reconstruire les scripts (seulement si `src/` est modifié)
 ```
 npm install
-npm run build:3d
+npm run build
 ```
-Cela régénère `assets/js/hero3d.js` (three.js r160 inclus, aucun appel à un CDN).
+Cela régénère `assets/js/scenes3d.js`, `assets/js/blog.js` et `assets/js/admin.js`.
 
 ## Photo du docteur
 Déposer `images/mikel-salloum.jpg` (vertical 4:5, ≥ 1000 px de large, JPG ~80 %).
 Tant qu'elle manque, le cadre affiche la dent 3D et le monogramme « MS ».
 
 ## À confirmer avec le client avant la mise en ligne définitive
-- Horaires d'ouverture (ceux du site sont un **exemple**)
 - Adresse e-mail
 - Impressum : pays d'obtention du diplôme, n° de TVA le cas échéant
 - Datenschutz : hébergeur, durée de conservation des logs

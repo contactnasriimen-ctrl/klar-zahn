@@ -37,9 +37,10 @@
     },
     "employee": { "@type": "Person", "name": "Mikel Salloum", "jobTitle": "Zahnarzt" },
     "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Thursday"], "opens": "08:00", "closes": "12:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Thursday"], "opens": "14:00", "closes": "18:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Wednesday", "Friday"], "opens": "08:00", "closes": "13:00" }
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Thursday", "Friday"], "opens": "09:00", "closes": "13:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Thursday"], "opens": "14:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Tuesday", "opens": "14:00", "closes": "19:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "13:30", "closes": "19:30" }
     ]
   }
   </script>
@@ -80,6 +81,7 @@
 </div>
 
 <div class="progress" aria-hidden="true"><span data-progress></span></div>
+<div class="cursor-light" aria-hidden="true"></div>
 
 <header class="site-header" data-header>
   <div class="header-bar">
@@ -92,6 +94,7 @@
         <li><a href="#leistungen">Leistungen</a></li>
         <li><a href="#labor">Meisterlabor</a></li>
         <li><a href="#angstfrei">Angstfrei</a></li>
+        <li><a href="#ratgeber">Ratgeber</a></li>
         <li><a href="#praxis">Über uns</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
@@ -111,6 +114,7 @@
       <li><a href="#labor">Meisterlabor</a></li>
       <li><a href="#ablauf">Ablauf</a></li>
       <li><a href="#angstfrei">Angstfrei</a></li>
+        <li><a href="#ratgeber">Ratgeber</a></li>
       <li><a href="#praxis">Über uns</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
@@ -130,6 +134,7 @@
       <span class="aurora a1"></span>
       <span class="aurora a2"></span>
       <span class="aurora a3"></span>
+      <span class="beams"></span>
       <div class="hero-floor"></div>
       <span class="grain"></span>
     </div>
@@ -187,6 +192,8 @@
 
   <!-- ================= STATEMENT ================= -->
   <section class="statement" id="willkommen">
+    <img class="floater fl-1" data-parallax="-0.18" src="assets/img/3d/tooth.webp" alt="" aria-hidden="true" loading="lazy">
+    <img class="floater fl-2" data-parallax="0.12" src="assets/img/3d/aesthetic.webp" alt="" aria-hidden="true" loading="lazy">
     <div class="container">
       <p class="eyebrow" data-reveal><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Willkommen bei Klar Zahn</p>
       <p class="statement-text" data-words>Wir verbinden moderne Zahnmedizin mit Zahntechnik aus dem eigenen Meisterlabor. Persönlich, schonend und mit Zeit für Ihre Fragen, damit Sie sich bei uns rundum wohlfühlen.</p>
@@ -312,7 +319,7 @@
 
   <!-- ================= MEISTERLABOR ================= -->
   <section class="lab" id="labor">
-    <div class="lab-bg" aria-hidden="true"><span class="lab-glow"></span><span class="lab-lines"></span></div>
+    <div class="lab-bg" aria-hidden="true"><span class="lab-glow"></span><span class="lab-lines"></span><canvas class="fireflies" data-fireflies></canvas></div>
     <div class="container">
       <div class="section-head">
         <p class="eyebrow" data-reveal><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Eigenes Meisterlabor</p>
@@ -326,7 +333,10 @@
             <span class="gauge g1" aria-hidden="true"></span>
             <span class="gauge g2" aria-hidden="true"></span>
             <span class="gauge g3" aria-hidden="true"></span>
-            <img class="lab-implant" src="assets/img/3d/implant.webp" alt="3D-Darstellung eines Zahnimplantats mit Krone" width="720" height="720" loading="lazy">
+            <div class="lab-3d" data-lab-3d>
+              <img class="lab-implant" src="assets/img/3d/implant.webp" alt="3D-Darstellung eines Zahnimplantats mit Krone" width="720" height="720" loading="lazy">
+              <canvas aria-hidden="true"></canvas>
+            </div>
             <div class="shade-card" data-step-show="0">
               <span class="shade-label">Zahnfarbe bestimmen</span>
               <span class="shade-row">
@@ -408,6 +418,7 @@
   <!-- ================= ANGSTFREI ================= -->
   <section class="calm" id="angstfrei">
     <div class="calm-sky" aria-hidden="true">
+      <canvas class="fireflies" data-fireflies data-count="70"></canvas>
       <span class="star" style="--x:8%;--y:18%;--s:3px;--t:3.2s"></span>
       <span class="star" style="--x:22%;--y:64%;--s:2px;--t:4.1s"></span>
       <span class="star" style="--x:35%;--y:12%;--s:2px;--t:2.7s"></span>
@@ -479,6 +490,26 @@
     </div>
   </section>
 
+  <!-- ================= RATGEBER ================= -->
+  <section class="journal" id="ratgeber">
+    <div class="journal-bg" aria-hidden="true"><span class="jl jl-1"></span><span class="jl jl-2"></span><span class="jl jl-3"></span></div>
+    <div class="container">
+      <div class="section-head split">
+        <div>
+          <p class="eyebrow" data-reveal><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Ratgeber</p>
+          <h2 data-reveal>Wissen für Ihr <em>Lächeln</em></h2>
+        </div>
+        <div class="journal-side" data-reveal>
+          <p class="section-lead">Tipps und Antworten aus unserer Praxis, verständlich erklärt von Zahnarzt Mikel Salloum und seinem Team.</p>
+          <a class="btn btn-dark" href="ratgeber.html" data-magnetic>Alle Artikel<svg class="ico"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+      <div class="post-grid" data-latest-posts aria-busy="true">
+        <div class="post-skeleton"></div><div class="post-skeleton"></div><div class="post-skeleton"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= FAQ ================= -->
   <section class="faq" id="faq">
     <div class="container faq-grid">
@@ -522,7 +553,7 @@
 
   <!-- ================= KONTAKT ================= -->
   <section class="contact" id="kontakt">
-    <div class="contact-bg" aria-hidden="true"><span class="aurora a1"></span><span class="aurora a2"></span><div class="hero-floor"></div></div>
+    <div class="contact-bg" aria-hidden="true"><span class="aurora a1"></span><span class="aurora a2"></span><span class="beams"></span><div class="hero-floor"></div><canvas class="fireflies" data-fireflies></canvas></div>
     <div class="container">
       <div class="contact-head">
         <p class="eyebrow" data-reveal><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Kontakt &amp; Anfahrt</p>
@@ -543,11 +574,11 @@
           <!-- Sprechzeiten: Text in den Zellen UND data-hours anpassen (Format HH:MM-HH:MM, mehrere mit Komma) -->
           <table class="hours" data-hours-table>
             <tbody>
-              <tr data-day="1" data-hours="08:00-12:00,14:00-18:00"><th scope="row">Montag</th><td>08:00 – 12:00 · 14:00 – 18:00</td></tr>
-              <tr data-day="2" data-hours="08:00-12:00,14:00-18:00"><th scope="row">Dienstag</th><td>08:00 – 12:00 · 14:00 – 18:00</td></tr>
-              <tr data-day="3" data-hours="08:00-13:00"><th scope="row">Mittwoch</th><td>08:00 – 13:00</td></tr>
-              <tr data-day="4" data-hours="08:00-12:00,14:00-18:00"><th scope="row">Donnerstag</th><td>08:00 – 12:00 · 14:00 – 18:00</td></tr>
-              <tr data-day="5" data-hours="08:00-13:00"><th scope="row">Freitag</th><td>08:00 – 13:00</td></tr>
+              <tr data-day="1" data-hours="09:00-13:00,14:00-18:00"><th scope="row">Montag</th><td>09:00 – 13:00 · 14:00 – 18:00</td></tr>
+              <tr data-day="2" data-hours="09:00-13:00,14:00-19:00"><th scope="row">Dienstag</th><td>09:00 – 13:00 · 14:00 – 19:00</td></tr>
+              <tr data-day="3" data-hours="13:30-19:30"><th scope="row">Mittwoch</th><td>13:30 – 19:30</td></tr>
+              <tr data-day="4" data-hours="09:00-13:00,14:00-18:00"><th scope="row">Donnerstag</th><td>09:00 – 13:00 · 14:00 – 18:00</td></tr>
+              <tr data-day="5" data-hours="09:00-13:00"><th scope="row">Freitag</th><td>09:00 – 13:00</td></tr>
               <tr data-day="6" data-hours=""><th scope="row">Samstag</th><td>geschlossen</td></tr>
               <tr data-day="0" data-hours=""><th scope="row">Sonntag</th><td>geschlossen</td></tr>
             </tbody>
@@ -604,7 +635,9 @@
           <li><a href="#leistungen">Leistungen</a></li>
           <li><a href="#labor">Meisterlabor</a></li>
           <li><a href="#angstfrei">Angstfrei</a></li>
+        <li><a href="#ratgeber">Ratgeber</a></li>
           <li><a href="#praxis">Über uns</a></li>
+          <li><a href="ratgeber.html">Ratgeber</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
       </nav>
@@ -623,6 +656,7 @@
       <nav aria-label="Rechtliches">
         <a href="impressum.html">Impressum</a>
         <a href="datenschutz.html">Datenschutz</a>
+        <a href="admin.html">Praxis-Login</a>
       </nav>
     </div>
   </div>
@@ -636,6 +670,8 @@
 <!--KZ:CONTENT-END-->
 
 <script src="assets/main.js" defer></script>
-<script src="assets/js/hero3d.js" defer></script>
+<script src="assets/js/firebase-config.js" defer></script>
+<script src="assets/js/scenes3d.js" defer></script>
+<script src="assets/js/blog.js" defer></script>
 </body>
 </html>

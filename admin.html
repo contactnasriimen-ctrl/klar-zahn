@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Praxis-Login | Klar Zahn</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#021c17">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/admin.css">
+</head>
+<body class="adm">
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="tooth" d="M8 3.5c-2.5 0-4.5 2-4.5 4.8c0 2.2.7 3.8 1.3 5.5c.6 1.7.9 3.4 1.3 5.3c.3 1.4.8 2.4 1.8 2.4c1.2 0 1.5-1.5 1.8-3c.3-1.6.7-3.2 2.3-3.2c1.6 0 2 1.6 2.3 3.2c.3 1.5.6 3 1.8 3c1 0 1.5-1 1.8-2.4c.4-1.9.7-3.6 1.3-5.3c.6-1.7 1.3-3.3 1.3-5.5c0-2.8-2-4.8-4.5-4.8c-1.6 0-2.6.9-4 .9c-1.4 0-2.4-.9-4-.9z"/>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-5-5-9 9"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" class="ico-fill"/><circle cx="4.5" cy="12" r="1" class="ico-fill"/><circle cx="4.5" cy="18" r="1" class="ico-fill"/></symbol>
+    <symbol id="i-olist" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 5h1.5v4M4 9h3M4 14.5c.5-.8 2.8-.9 2.8.6 0 1.1-2.8 1.7-2.8 2.9h3"/></symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24"><path d="M5 11h4v6H4v-4c0-3 1-5 4-6M15 11h4v6h-5v-4c0-3 1-5 4-6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-4M10 16.5 5.5 12 10 7.5M5.5 12H15"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4.5M7 9l5-5 5 5M4.5 15.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2"/></symbol>
+  </defs>
+</svg>
+
+<header class="adm-top">
+  <a class="adm-brand" href="index.html" aria-label="Zur Website">
+    <img src="assets/img/logo-klar-zahn.png" alt="Klar Zahn – Zahnmedizin &amp; Zahntechnik" width="960" height="231">
+  </a>
+  <span class="adm-badge">Praxis-Login</span>
+  <div class="adm-user" data-user hidden>
+    <span data-user-email></span>
+    <button class="adm-btn adm-btn-ghost" type="button" data-logout><svg class="ico"><use href="#i-logout"/></svg>Abmelden</button>
+  </div>
+</header>
+
+<main class="adm-main">
+
+  <!-- Lädt -->
+  <section class="adm-center" data-view="loading">
+    <div class="adm-spinner" aria-label="Wird geladen"></div>
+  </section>
+
+  <!-- Firebase noch nicht eingerichtet -->
+  <section class="adm-center" data-view="setup" hidden>
+    <div class="adm-card adm-narrow">
+      <img class="adm-card-3d" src="assets/img/3d/kids.webp" alt="" width="720" height="720">
+      <h1>Der Ratgeber ist noch nicht verbunden</h1>
+      <p>Damit Artikel online gespeichert werden können, muss einmalig ein kostenloses Firebase-Projekt eingerichtet werden. Die Anleitung steht in der Datei <strong>FIREBASE_SETUP.md</strong> im Projektordner.</p>
+      <ol class="adm-steps">
+        <li>Firebase-Projekt anlegen, E-Mail-Anmeldung und Firestore aktivieren</li>
+        <li>Konfiguration in <code>assets/js/firebase-config.js</code> einfügen</li>
+        <li>Sicherheitsregeln aus <code>firestore.rules</code> veröffentlichen</li>
+        <li>Konto für den Praxisinhaber anlegen und als Admin eintragen</li>
+      </ol>
+      <a class="btn btn-dark" href="index.html">Zur Website</a>
+    </div>
+  </section>
+
+  <!-- Anmeldung -->
+  <section class="adm-login" data-view="login" hidden>
+    <div class="adm-login-art" aria-hidden="true">
+      <span class="aurora a1"></span><span class="aurora a2"></span><span class="beams"></span>
+      <img src="assets/img/3d/tooth.webp" alt="" width="720" height="720">
+      <p>Schreiben Sie Artikel für Ihre Patientinnen und Patienten. Sie erscheinen sofort im Ratgeber auf der Website.</p>
+    </div>
+    <form class="adm-card adm-login-form" data-login-form novalidate>
+      <h1>Willkommen zurück</h1>
+      <p class="adm-muted">Melden Sie sich an, um Artikel zu schreiben und zu veröffentlichen.</p>
+      <label class="adm-field"><span>E-Mail</span><input id="login-email" type="email" autocomplete="username" required></label>
+      <label class="adm-field"><span>Passwort</span><input id="login-password" type="password" autocomplete="current-password" required></label>
+      <p class="adm-error" data-login-error hidden></p>
+      <button class="btn btn-glow btn-lg" type="submit">Anmelden<svg class="ico"><use href="#i-arrow"/></svg></button>
+      <button class="adm-link" type="button" data-reset>Passwort vergessen?</button>
+    </form>
+  </section>
+
+  <!-- Kein Zugriff -->
+  <section class="adm-center" data-view="noaccess" hidden>
+    <div class="adm-card adm-narrow">
+      <h1>Kein Zugriff</h1>
+      <p>Sie sind angemeldet, aber dieses Konto ist noch nicht als Admin freigeschaltet. Tragen Sie die folgende Benutzer-ID in Firestore unter <code>admins</code> ein (siehe FIREBASE_SETUP.md):</p>
+      <p class="adm-uid" data-uid></p>
+      <button class="btn btn-dark" type="button" data-logout>Abmelden</button>
+    </div>
+  </section>
+
+  <!-- Übersicht -->
+  <section class="adm-wrap" data-view="list" hidden>
+    <div class="adm-head">
+      <div>
+        <h1>Ratgeber-Artikel</h1>
+        <p class="adm-muted">Schreiben, bearbeiten und veröffentlichen Sie Artikel für die Website.</p>
+      </div>
+      <div class="adm-head-actions">
+        <a class="adm-btn adm-btn-ghost" href="ratgeber.html" target="_blank" rel="noopener"><svg class="ico"><use href="#i-eye"/></svg>Ratgeber ansehen</a>
+        <button class="btn btn-glow" type="button" data-new><svg class="ico"><use href="#i-plus"/></svg>Neuer Artikel</button>
+      </div>
+    </div>
+    <div class="adm-stats">
+      <div class="adm-stat"><span>Veröffentlicht</span><strong data-stat-pub>0</strong></div>
+      <div class="adm-stat"><span>Entwürfe</span><strong data-stat-draft>0</strong></div>
+      <div class="adm-stat"><span>Zuletzt bearbeitet</span><strong data-stat-last>–</strong></div>
+    </div>
+    <div class="adm-empty adm-card" data-empty hidden>
+      <img src="assets/img/3d/kids.webp" alt="" width="720" height="720">
+      <h2>Noch keine Artikel</h2>
+      <p class="adm-muted">Schreiben Sie Ihren ersten Artikel oder übernehmen Sie drei fertige Beispielartikel, die Sie anschließend anpassen können.</p>
+      <div class="adm-head-actions">
+        <button class="btn btn-glow" type="button" data-new><svg class="ico"><use href="#i-plus"/></svg>Ersten Artikel schreiben</button>
+        <button class="adm-btn adm-btn-soft" type="button" data-import>3 Beispielartikel übernehmen</button>
+      </div>
+    </div>
+    <div class="adm-list" data-list></div>
+  </section>
+
+  <!-- Editor -->
+  <section class="adm-wrap" data-view="editor" hidden>
+    <div class="adm-head">
+      <div>
+        <button class="adm-link adm-back" type="button" data-back><svg class="ico"><use href="#i-arrow"/></svg>Alle Artikel</button>
+        <h1 data-editor-title>Neuer Artikel</h1>
+      </div>
+      <span class="adm-pill is-draft" data-editor-status>Noch nicht gespeichert</span>
+    </div>
+
+    <div class="adm-editor-grid">
+      <div class="adm-editor-main">
+        <label class="adm-field"><span>Titel</span><input id="post-title" class="adm-title-input" type="text" maxlength="140" placeholder="z. B. Wie oft sollte ich zur Kontrolle?"></label>
+        <label class="adm-field"><span>Kurzbeschreibung <em data-excerpt-count>0 / 220</em></span><textarea id="post-excerpt" rows="3" maxlength="220" placeholder="Zwei Sätze, die neugierig machen. Erscheint auf der Artikelkarte."></textarea></label>
+        <div class="adm-field">
+          <span>Inhalt</span>
+          <div class="adm-toolbar" data-toolbar role="toolbar" aria-label="Formatierung">
+            <button type="button" data-cmd="formatBlock" data-val="p" title="Absatz">¶</button>
+            <button type="button" data-cmd="formatBlock" data-val="h2" title="Zwischenüberschrift">H2</button>
+            <button type="button" data-cmd="formatBlock" data-val="h3" title="Kleine Überschrift">H3</button>
+            <span class="adm-sep"></span>
+            <button type="button" data-cmd="bold" title="Fett"><strong>B</strong></button>
+            <button type="button" data-cmd="italic" title="Kursiv"><em>I</em></button>
+            <span class="adm-sep"></span>
+            <button type="button" data-cmd="insertUnorderedList" title="Liste"><svg class="ico"><use href="#i-list"/></svg></button>
+            <button type="button" data-cmd="insertOrderedList" title="Nummerierte Liste"><svg class="ico"><use href="#i-olist"/></svg></button>
+            <button type="button" data-cmd="formatBlock" data-val="blockquote" title="Hinweis-Box"><svg class="ico"><use href="#i-quote"/></svg></button>
+            <span class="adm-sep"></span>
+            <button type="button" data-cmd="link" title="Link einfügen"><svg class="ico"><use href="#i-link"/></svg></button>
+            <button type="button" data-cmd="image" title="Bild einfügen"><svg class="ico"><use href="#i-image"/></svg></button>
+          </div>
+          <div class="adm-linkbar" data-linkbar hidden>
+            <input id="link-url" type="url" placeholder="https://">
+            <button class="adm-btn adm-btn-soft" type="button" data-link-apply>Link setzen</button>
+            <button class="adm-btn adm-btn-ghost" type="button" data-link-cancel>Abbrechen</button>
+          </div>
+          <div class="adm-editor prose" data-editor contenteditable="true" spellcheck="true" aria-label="Artikeltext"></div>
+          <input id="inline-image" type="file" accept="image/*" hidden>
+        </div>
+      </div>
+
+      <aside class="adm-side">
+        <div class="adm-card adm-side-card">
+          <h2>Veröffentlichen</h2>
+          <button class="btn btn-glow" type="button" data-publish>Veröffentlichen</button>
+          <button class="adm-btn adm-btn-soft" type="button" data-save-draft>Als Entwurf speichern</button>
+          <button class="adm-btn adm-btn-ghost" type="button" data-preview-open><svg class="ico"><use href="#i-eye"/></svg>Vorschau</button>
+          <a class="adm-btn adm-btn-ghost" data-view-live href="#" target="_blank" rel="noopener" hidden>Auf der Website ansehen</a>
+          <button class="adm-btn adm-btn-ghost adm-danger" type="button" data-unpublish hidden>Von der Website nehmen</button>
+          <div class="adm-size" data-size><span></span></div>
+          <p class="adm-tiny" data-size-label></p>
+        </div>
+        <div class="adm-card adm-side-card">
+          <h2>Titelbild</h2>
+          <label class="adm-drop" data-cover-drop>
+            <div class="adm-cover-preview" data-cover-preview><span>Noch kein Titelbild</span></div>
+            <span class="adm-drop-hint"><svg class="ico"><use href="#i-upload"/></svg>Bild wählen oder hierher ziehen</span>
+            <input id="cover-file" type="file" accept="image/*" hidden>
+          </label>
+          <button class="adm-link" type="button" data-cover-remove hidden>Titelbild entfernen</button>
+          <p class="adm-tiny">Wird automatisch auf 16:9 zugeschnitten und verkleinert.</p>
+        </div>
+        <div class="adm-card adm-side-card">
+          <h2>Details</h2>
+          <label class="adm-field"><span>Kategorie</span><select id="post-category"></select></label>
+          <label class="adm-field"><span>Datum</span><input id="post-date" type="date"></label>
+          <label class="adm-field"><span>Autor</span><input id="post-author" type="text" maxlength="80"></label>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<div class="adm-modal" data-preview hidden>
+  <div class="adm-modal-backdrop" data-preview-close></div>
+  <div class="adm-modal-panel" role="dialog" aria-modal="true" aria-label="Vorschau">
+    <div class="adm-modal-bar"><strong>Vorschau</strong><button class="adm-btn adm-btn-ghost" type="button" data-preview-close>Schließen</button></div>
+    <article class="post-full adm-preview-body" data-preview-body></article>
+  </div>
+</div>
+
+<div class="adm-toast" data-toast role="status" aria-live="polite" hidden></div>
+
+<script src="assets/js/firebase-config.js"></script>
+<script src="assets/js/admin.js" defer></script>
+</body>
+</html>

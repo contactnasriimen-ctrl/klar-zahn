@@ -1,12 +1,15 @@
 {
   "name": "klar-zahn-website",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Website Klar Zahn – Zahnmedizin & Zahntechnik, Mörfelden-Walldorf",
   "scripts": {
-    "build:3d": "node tools/build-3d.js"
+    "build": "node tools/build.js"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
+  },
+  "dependencies": {
+    "firebase": "^10.14.1"
   }
 }
