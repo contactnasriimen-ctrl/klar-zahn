@@ -396,16 +396,57 @@
     });
   }
 
-  /* ---------- Parallaxe ---------- */
+  /* ---------- Parallaxe (Scrollen + Maus) ---------- */
   var parallax = $$("[data-parallax]");
+  var gmx = 0, gmy = 0;
   if (parallax.length && !reduce) {
+    if (finePointer) window.addEventListener("pointermove", function (e) { gmx = e.clientX / window.innerWidth - 0.5; gmy = e.clientY / window.innerHeight - 0.5; request(); }, { passive: true });
     tasks.push(function (vh) {
       parallax.forEach(function (el) {
         var r = el.parentElement.getBoundingClientRect();
-        var off = (r.top + r.height / 2 - vh / 2) * parseFloat(el.getAttribute("data-parallax"));
-        el.style.translate = "0 " + off.toFixed(1) + "px";
+        var sp = parseFloat(el.getAttribute("data-parallax"));
+        var off = (r.top + r.height / 2 - vh / 2) * sp;
+        var depth = 120 * Math.abs(sp);
+        el.style.translate = (gmx * depth).toFixed(1) + "px " + (off + gmy * depth).toFixed(1) + "px";
       });
     });
+  }
+
+  /* ---------- Funkenspur am Mauszeiger ---------- */
+  if (finePointer && !reduce) {
+    var trail = document.createElement("canvas");
+    trail.className = "sparkle-trail";
+    trail.setAttribute("aria-hidden", "true");
+    document.body.appendChild(trail);
+    var tctx = trail.getContext("2d"), tDpr = Math.min(window.devicePixelRatio || 1, 2), sparks = [], tRunning = false, lastSx = -99, lastSy = -99;
+    var tSize = function () { trail.width = window.innerWidth * tDpr; trail.height = window.innerHeight * tDpr; tctx.setTransform(tDpr, 0, 0, tDpr, 0, 0); };
+    tSize();
+    window.addEventListener("resize", tSize);
+    var tColors = ["94,181,147", "226,180,83", "47,143,106", "142,230,189"];
+    var drawStar = function (x, y, r, rot) {
+      tctx.save(); tctx.translate(x, y); tctx.rotate(rot); tctx.beginPath();
+      for (var k = 0; k < 4; k++) { tctx.rotate(Math.PI / 2); tctx.quadraticCurveTo(r * 0.12, r * 0.12, 0, r); tctx.quadraticCurveTo(-r * 0.12, r * 0.12, 0, 0); }
+      tctx.fill(); tctx.restore();
+    };
+    var tLoop = function () {
+      tctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (var i = sparks.length - 1; i >= 0; i--) {
+        var p = sparks[i];
+        p.life -= 0.022; p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.rot += p.vr;
+        if (p.life <= 0) { sparks.splice(i, 1); continue; }
+        tctx.fillStyle = "rgba(" + p.c + "," + (p.life * 0.9).toFixed(3) + ")";
+        drawStar(p.x, p.y, p.r * (0.4 + p.life * 0.6), p.rot);
+      }
+      if (sparks.length) window.requestAnimationFrame(tLoop); else tRunning = false;
+    };
+    window.addEventListener("pointermove", function (e) {
+      var dx = e.clientX - lastSx, dy = e.clientY - lastSy;
+      if (dx * dx + dy * dy < 140) return;
+      lastSx = e.clientX; lastSy = e.clientY;
+      if (sparks.length > 70) return;
+      sparks.push({ x: e.clientX, y: e.clientY, vx: (Math.random() - 0.5) * 1.2, vy: (Math.random() - 0.5) * 1.2 - 0.4, r: 4 + Math.random() * 6, rot: Math.random() * 3, vr: (Math.random() - 0.5) * 0.2, life: 1, c: tColors[Math.floor(Math.random() * tColors.length)] });
+      if (!tRunning) { tRunning = true; window.requestAnimationFrame(tLoop); }
+    }, { passive: true });
   }
 
   /* ---------- Jahr ---------- */

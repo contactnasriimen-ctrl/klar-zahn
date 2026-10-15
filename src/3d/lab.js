@@ -1,6 +1,7 @@
 /* Klar Zahn – 3D-Implantat im Meisterlabor: setzt sich beim Scrollen zusammen. */
 import { THREE, makeRenderer, addEnvironment, addLights, makeMaterials, makeImplant, makeHalo, makeGlowLight, makeSparkle } from "./models.js";
 import { supportsWebGL } from "./hero.js";
+import { makeBubbles, makeFairyDust } from "./magic.js";
 
 export function initLab() {
   const stage = document.querySelector("[data-lab-3d]");
@@ -48,11 +49,16 @@ export function initLab() {
   scene.add(lightA, lightB);
   const spark = makeSparkle(m.mint, 0.16);
   rig.add(spark);
+  const bubbles = makeBubbles(5, 1.3);
+  scene.add(bubbles);
+  const dust = makeFairyDust(150, 1.5);
+  scene.add(dust);
 
   function resize() {
     const w = stage.clientWidth, h = stage.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
+    dust.userData.resize(h * renderer.getPixelRatio(), 30);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
@@ -100,6 +106,8 @@ export function initLab() {
     spark.position.set(Math.cos(t * 0.8) * 1.1, 1.5 + Math.sin(t * 1.2) * 0.1, Math.sin(t * 0.8) * 0.6);
     spark.rotation.z = t;
     halo.material.opacity = 0.26 + e * 0.16 + Math.sin(t * 1.4) * 0.05;
+    bubbles.userData.update(t);
+    dust.userData.update(t);
 
     renderer.render(scene, camera);
   }

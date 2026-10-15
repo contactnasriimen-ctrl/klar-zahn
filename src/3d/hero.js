@@ -3,6 +3,7 @@ import {
   THREE, makeRenderer, addEnvironment, addLights, makeMaterials, makeLogoTooth, makeParticles,
   makeOrbit, makeSparkle, makeHalo, makeGlowLight, makeBurst
 } from "./models.js";
+import { makeBubbles, makeFairyDust, makeGlints } from "./magic.js";
 
 export function supportsWebGL() {
   try {
@@ -72,6 +73,14 @@ export function initHero() {
   const particles = makeParticles(window.innerWidth < 700 ? 90 : 170, 2.6);
   scene.add(particles);
 
+  /* Magie: Seifenblasen, Feenstaub, Sternfunkeln */
+  const bubbles = makeBubbles(window.innerWidth < 700 ? 6 : 10, 1.7);
+  scene.add(bubbles);
+  const dust = makeFairyDust(window.innerWidth < 700 ? 170 : 340, 1.95);
+  scene.add(dust);
+  const glints = makeGlints([[0.8, 0.98, 0.42], [-0.98, 0.3, 0.42], [0.42, -0.98, 0.46], [-0.25, 1.08, 0.4]], 0xe2b453);
+  tooth.add(glints);
+
   const burst = makeBurst(window.innerWidth < 700 ? 70 : 120);
   scene.add(burst);
   const shock = new THREE.Mesh(
@@ -84,6 +93,7 @@ export function initHero() {
     const w = stage.clientWidth, h = stage.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
+    dust.userData.resize(h * renderer.getPixelRatio(), 30);
     camera.aspect = w / h;
     camera.position.z = w < 300 ? 10.2 : 9.4;
     camera.updateProjectionMatrix();
@@ -103,7 +113,12 @@ export function initHero() {
   /* Klick auf den Zahn: Drehung + Funken + Lichtwelle */
   const raycaster = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
-  let spin = 0, shockLife = 0, flash = 0;
+  let spin = 0, shockLife = 0, flash = 0, lastPulse = 0;
+  let dragging = false, lastX = 0, moved = 0;
+  canvas.style.touchAction = "pan-y";
+  canvas.addEventListener("pointerdown", function (e) { dragging = true; lastX = e.clientX; moved = 0; });
+  window.addEventListener("pointerup", function () { dragging = false; });
+  window.addEventListener("pointercancel", function () { dragging = false; });
   function hitTooth(e) {
     const r = canvas.getBoundingClientRect();
     ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -111,11 +126,23 @@ export function initHero() {
     return raycaster.intersectObjects(toothMeshes, false)[0];
   }
   canvas.addEventListener("pointermove", function (e) {
-    canvas.style.cursor = hitTooth(e) ? "pointer" : "";
+    if (dragging) {
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      moved += Math.abs(dx);
+      spin += dx * 0.32;
+      if (moved > 6) stage.classList.add("is-touched");
+      canvas.style.cursor = "grabbing";
+      return;
+    }
+    canvas.style.cursor = hitTooth(e) ? "grab" : "";
   });
   canvas.addEventListener("click", function (e) {
+    if (moved > 6) return;
     const hit = hitTooth(e);
     if (!hit) return;
+    stage.classList.add("is-touched");
+    lastPulse = clock.getElapsedTime();
     spin += 9;
     flash = 1;
     burst.userData.fire(hit.point);
@@ -188,6 +215,16 @@ export function initHero() {
     particles.rotation.y = t * 0.05 + smooth.x * 0.1;
     particles.rotation.x = smooth.y * 0.05;
 
+    bubbles.userData.update(t);
+    dust.userData.update(t);
+    glints.userData.update(t);
+    if (t - lastPulse > 7.5) {
+      lastPulse = t;
+      burst.userData.fire(new THREE.Vector3(0, 0.45, 0.7));
+      shock.position.copy(rig.position);
+      shockLife = 1;
+      flash = 0.55;
+    }
     burst.userData.update(dt);
     if (shockLife > 0) {
       shockLife -= dt * 1.4;

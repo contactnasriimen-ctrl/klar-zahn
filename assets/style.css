@@ -1392,3 +1392,20 @@ section[id], [id^="leistung-"] { scroll-margin-top: 100px; }
 @media (max-width: 900px) {
   .lab-chapters { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* =========================================================================
+   Version 8: Magie – Funkenspur, Hinweis am 3D-Zahn
+   ========================================================================= */
+.sparkle-trail { position: fixed; inset: 0; z-index: 96; width: 100vw; height: 100vh; pointer-events: none; }
+.hero-3d-hint {
+  position: absolute; left: 50%; bottom: 10%; z-index: 4; translate: -50% 0;
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; pointer-events: none;
+  background: color-mix(in srgb, var(--paper) 82%, transparent); border: 1px solid var(--paper);
+  box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--forest) 60%, transparent);
+  font-size: .76rem; font-weight: 700; color: var(--forest); white-space: nowrap;
+  animation: hint-bob 2.4s ease-in-out infinite; transition: opacity .6s ease;
+}
+.hero-3d-hint .ico { width: 15px; height: 15px; color: var(--mint-ink); animation: spin 3s linear infinite; }
+.hero-3d.is-touched .hero-3d-hint { opacity: 0; }
+@keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@media (hover: none), (prefers-reduced-motion: reduce) { .sparkle-trail { display: none; } }

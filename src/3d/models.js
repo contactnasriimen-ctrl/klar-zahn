@@ -37,8 +37,9 @@ export function addLights(scene) {
 export function makeMaterials() {
   return {
     enamel: new THREE.MeshPhysicalMaterial({
-      color: 0xf7f8f5, roughness: 0.16, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05,
-      sheen: 0.5, sheenRoughness: 0.45, sheenColor: new THREE.Color(0xcff3e2)
+      color: 0xf7f8f5, roughness: 0.14, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04,
+      sheen: 0.5, sheenRoughness: 0.45, sheenColor: new THREE.Color(0xcff3e2),
+      iridescence: 0.45, iridescenceIOR: 1.35, iridescenceThicknessRange: [180, 620]
     }),
     mint: new THREE.MeshPhysicalMaterial({ color: 0x5eb593, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.08 }),
     mintDeep: new THREE.MeshPhysicalMaterial({ color: 0x2f8f6a, roughness: 0.24, clearcoat: 0.9, clearcoatRoughness: 0.1 }),
