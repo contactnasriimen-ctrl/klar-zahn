@@ -1,4 +1,4 @@
-# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 3)
+# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 4)
 
 Site vitrine statique (HTML/CSS/JS, sans framework) pour le cabinet dentaire de Mikel Salloum,
 Opelstraße 2, 64546 Mörfelden-Walldorf. Page d'accueil + Impressum + Datenschutz, en allemand.
@@ -43,7 +43,8 @@ Double-cliquer sur `index.html` (aucun serveur nécessaire).
 npm install
 npm run build
 ```
-Cela régénère `assets/js/scenes3d.js`, `assets/js/blog.js` et `assets/js/admin.js`.
+Cela régénère `assets/js/scenes3d.js`, `assets/js/blog.js`, `assets/js/admin.js`, `assets/style.min.css` et `assets/main.min.js`.
+**Après toute modification de `assets/style.css` ou `assets/main.js`, relancer `npm run build`** (le site utilise les versions `.min`).
 
 ## Photos
 Les photos réelles (`assets/img/photos/`) viennent d'**Unsplash** (licence Unsplash : usage commercial gratuit, sans attribution obligatoire).
@@ -66,8 +67,7 @@ Ce sont des photos d'ambiance (sourires, soins, labo) : **à remplacer dès que 
 - Hashtags cliquables en bas de page + hashtags par article (champ « Hashtags » dans le Praxis-Login). Listes pour les réseaux : [HASHTAGS.md](HASHTAGS.md).
 - Données structurées Google : cabinet dentaire (prestations, horaires, zone desservie), FAQ, articles.
 - `sitemap.xml` et `robots.txt` fournis.
-- **Important : le site est encore en `noindex`** (Google ne l'indexe pas). Le retirer de `index.html` et `ratgeber.html`
-  une fois l'Impressum complété — idéalement sur le domaine définitif (puis mettre à jour `canonical`, `sitemap.xml` et `robots.txt`).
+- Indexation activée. Guide complet et liste des actions restantes : [SEO.md](SEO.md).
 
 ## Photo du docteur
 Déposer `images/mikel-salloum.jpg` (vertical 4:5, ≥ 1000 px de large, JPG ~80 %).
@@ -78,7 +78,6 @@ Tant qu'elle manque, le cadre affiche la dent 3D et le monogramme « MS ».
 - Impressum : pays d'obtention du diplôme, n° de TVA le cas échéant
 - Datenschutz : hébergeur, durée de conservation des logs
 - Nom de domaine
-- Puis retirer la balise `<meta name="robots" content="noindex, nofollow">` de `index.html`
 
 ## RGPD
 Polices et three.js hébergés localement (aucune connexion à Google ni à un CDN), pas de cookies,

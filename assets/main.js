@@ -9,6 +9,21 @@
   var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var DAY_NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 
+  /* ---------- Schwere Skripte erst nach dem Laden (schnellere erste Anzeige) ---------- */
+  function loadScript(src) { var s = document.createElement("script"); s.src = src; s.async = true; document.body.appendChild(s); }
+  if (document.querySelector("[data-hero-3d], [data-lab-3d]")) {
+    var start3d = function () { (window.requestIdleCallback || function (f) { return setTimeout(f, 250); })(function () { loadScript("assets/js/scenes3d.js"); }, { timeout: 1800 }); };
+    if (document.readyState === "complete") start3d(); else window.addEventListener("load", start3d);
+  }
+  var blogTarget = document.querySelector("[data-blog], [data-latest-posts]");
+  if (blogTarget) {
+    if (blogTarget.hasAttribute("data-blog") || !("IntersectionObserver" in window)) loadScript("assets/js/blog.js");
+    else {
+      var blogIO = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { blogIO.disconnect(); loadScript("assets/js/blog.js"); } }, { rootMargin: "1400px 0px" });
+      blogIO.observe(blogTarget);
+    }
+  }
+
   /* ---------- Scroll-Schleife ---------- */
   var tasks = [];
   var ticking = false;

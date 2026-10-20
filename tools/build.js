@@ -13,10 +13,17 @@ const bundles = [
   ["src/cms/admin.js", "assets/js/admin.js"]
 ];
 
+const minified = [
+  ["assets/style.css", "assets/style.min.css"],
+  ["assets/main.js", "assets/main.min.js"]
+];
+
 Promise.all(bundles.map(function (b) {
   return esbuild.build({
     entryPoints: [path.join(root, b[0])],
     outfile: path.join(root, b[1]),
     bundle: true, format: "iife", minify: true, target: ["es2018"], legalComments: "eof", logLevel: "info"
   });
-})).catch(function () { process.exit(1); });
+}).concat(minified.map(function (f) {
+  return esbuild.build({ entryPoints: [path.join(root, f[0])], outfile: path.join(root, f[1]), bundle: false, minify: true, logLevel: "info" });
+}))).catch(function () { process.exit(1); });

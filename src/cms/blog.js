@@ -26,6 +26,22 @@ function addArticleLd(a, cover) {
   s.type = "application/ld+json";
   s.textContent = JSON.stringify(ld);
   document.head.appendChild(s);
+  const url = SITE + "ratgeber.html?artikel=" + encodeURIComponent(a.id);
+  let canon = document.querySelector('link[rel="canonical"]');
+  if (!canon) { canon = document.createElement("link"); canon.rel = "canonical"; document.head.appendChild(canon); }
+  canon.href = url;
+  [["og:title", a.title], ["og:description", a.excerpt || ""], ["og:url", url], ["og:type", "article"]].forEach(function (p) {
+    let mm = document.querySelector('meta[property="' + p[0] + '"]');
+    if (!mm) { mm = document.createElement("meta"); mm.setAttribute("property", p[0]); document.head.appendChild(mm); }
+    mm.setAttribute("content", p[1]);
+  });
+  const bc = document.createElement("script");
+  bc.type = "application/ld+json";
+  bc.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Startseite", item: SITE },
+    { "@type": "ListItem", position: 2, name: "Ratgeber", item: SITE + "ratgeber.html" },
+    { "@type": "ListItem", position: 3, name: a.title, item: url }] });
+  document.head.appendChild(bc);
 }
 
 function bindTilt(root) {
