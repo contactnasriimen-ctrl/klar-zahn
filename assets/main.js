@@ -112,8 +112,10 @@
         revealIO.unobserve(entry.target);
       });
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.06 });
-    $$("[data-reveal]").forEach(function (el) {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+    var revealEls = $$("[data-reveal]"), revealLimit = window.innerHeight * 0.9;
+    var revealTops = revealEls.map(function (el) { return el.getBoundingClientRect().top; });
+    revealEls.forEach(function (el, i) {
+      if (revealTops[i] < revealLimit) return;
       el.classList.add("rv");
       revealIO.observe(el);
     });
@@ -470,13 +472,9 @@
     }, { passive: true });
   }
 
-  /* ---------- Wörter der Überschriften gleiten herein ---------- */
+  /* ---------- Wörter der Überschriften gleiten herein (erst kurz vor dem Sichtbarwerden) ---------- */
   if (!reduce && "IntersectionObserver" in window) {
-    var splitHeads = $$(".section-head h2, .about-copy h2, .faq-intro h2, .calm-copy h2, .contact-head h2");
-    var splitIO = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-split-in"); splitIO.unobserve(en.target); } });
-    }, { threshold: 0.3 });
-    splitHeads.forEach(function (h) {
+    var splitHeading = function (h) {
       var n = 0;
       h.setAttribute("aria-label", h.textContent.replace(/\s+/g, " ").trim());
       (function walk(node) {
@@ -495,8 +493,15 @@
         });
       })(h);
       h.classList.add("is-split");
-      splitIO.observe(h);
-    });
+      showIO.observe(h);
+    };
+    var showIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { showIO.unobserve(en.target); en.target.classList.add("is-split-in"); } });
+    }, { threshold: 0.3 });
+    var splitIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { splitIO.unobserve(en.target); splitHeading(en.target); } });
+    }, { rootMargin: "0px 0px 30% 0px" });
+    $$(".section-head h2, .about-copy h2, .faq-intro h2, .calm-copy h2, .contact-head h2").forEach(function (h) { splitIO.observe(h); });
   }
 
   /* ---------- Scroll-Tempo: Bänder neigen sich, Typo-Band beschleunigt ---------- */
