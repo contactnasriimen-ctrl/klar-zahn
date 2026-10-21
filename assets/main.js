@@ -585,6 +585,21 @@
     window.addEventListener("pointerup", function () { ring.classList.remove("is-down"); });
   }
 
+  /* ---------- Schillernde Blasen in hellen Abschnitten ---------- */
+  if (!reduce) {
+    $$(".services, .journal, .faq, .steps, .booking").forEach(function (sec) {
+      var box = document.createElement("div");
+      box.className = "bubbles";
+      box.setAttribute("aria-hidden", "true");
+      var html = "";
+      for (var i = 0; i < 9; i++) {
+        html += "<span style=\"--x:" + Math.round(Math.random() * 96) + "%;--s:" + Math.round(10 + Math.random() * 34) + "px;--t:" + (14 + Math.random() * 16).toFixed(1) + "s;--dl:-" + (Math.random() * 20).toFixed(1) + "s\"></span>";
+      }
+      box.innerHTML = html;
+      sec.insertBefore(box, sec.firstChild);
+    });
+  }
+
   /* ---------- Jahr ---------- */
   $$("[data-year]").forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
 

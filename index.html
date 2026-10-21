@@ -46,6 +46,7 @@
     "@id": "https://contactnasriimen-ctrl.github.io/klar-zahn/#praxis",
     "name": "Klar Zahn – Zahnmedizin & Zahntechnik",
     "telephone": "+49 6105 23604",
+    "email": "Kontakt@klar-zahn.de",
     "image": [
       "https://contactnasriimen-ctrl.github.io/klar-zahn/assets/img/og-image.jpg",
       "https://contactnasriimen-ctrl.github.io/klar-zahn/assets/img/photos/hero-laechelnde-patientin.webp"
@@ -172,6 +173,11 @@
       "longitude": 8.5666833
     },
     "hasMap": "https://www.google.com/maps/search/?api=1&query=Opelstra%C3%9Fe+2%2C+64546+M%C3%B6rfelden-Walldorf",
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "name": "Online-Terminanfrage",
+      "target": { "@type": "EntryPoint", "urlTemplate": "https://contactnasriimen-ctrl.github.io/klar-zahn/termin.html", "inLanguage": "de-DE", "actionPlatform": ["http://schema.org/DesktopWebPlatform", "http://schema.org/MobileWebPlatform"] }
+    },
     "knowsLanguage": [
       "de"
     ]
@@ -302,7 +308,7 @@
         <li><a href="#faq">FAQ</a></li>
       </ul>
     </nav>
-    <a class="btn btn-glow header-cta" href="#kontakt" data-magnetic><svg class="ico"><use href="#i-calendar"/></svg><span>Termin vereinbaren</span></a>
+    <a class="btn btn-glow header-cta pulse" href="termin.html" data-magnetic><svg class="ico"><use href="#i-calendar"/></svg><span>Termin vereinbaren</span></a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menü öffnen" data-menu-toggle>
       <span></span><span></span>
     </button>
@@ -321,6 +327,7 @@
       <li><a href="#praxis">Über uns</a></li>
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
+      <li><a href="termin.html">Online-Termin</a></li>
     </ol>
   </nav>
   <div class="menu-foot">
@@ -350,9 +357,10 @@
           <span class="line"><span>Gesunde Zähne,</span></span>
           <span class="line"><span><em>klares</em> Lächeln.</span></span>
         </h1>
+        <p class="hero-rotator" aria-label="Ihre Praxis für Implantate, Zahnersatz, Kinder, Angstpatienten und Prophylaxe"><span aria-hidden="true">Ihre Praxis für</span> <span class="rot" aria-hidden="true"><span>Implantate</span><span>Zahnersatz</span><span>Kinder</span><span>Angstpatienten</span><span>Prophylaxe</span><span>Implantate</span></span></p>
         <p class="hero-lead">Moderne Zahnmedizin und Zahnersatz aus unserem eigenen Meisterlabor. Persönlich, schonend und ganz in Ihrer Nähe.</p>
         <div class="hero-actions">
-          <a class="btn btn-glow btn-lg" href="#kontakt" data-magnetic>Termin vereinbaren<svg class="ico"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn-glow btn-lg pulse" href="termin.html" data-magnetic>Termin online anfragen<svg class="ico"><use href="#i-arrow"/></svg></a>
           <a class="btn btn-line btn-lg" href="tel:+49610523604"><svg class="ico"><use href="#i-phone"/></svg>06105 / 23604</a>
         </div>
         <ul class="hero-trust">
@@ -473,6 +481,7 @@
             <span class="tile-tag">Fest &amp; dauerhaft</span>
             <h3>Implantologie</h3>
             <p>Implantate ersetzen fehlende Zähne fest und dauerhaft. Wir planen Ihre Versorgung genau und fertigen die Krone im eigenen Labor.</p>
+            <a class="tile-link tile-cta" href="termin.html?leistung=implantologie">Termin anfragen<svg class="ico"><use href="#i-arrow"/></svg></a>
           </div>
           <img decoding="async" class="tile-3d" src="assets/img/3d/implant-400.webp" srcset="assets/img/3d/implant-400.webp 400w, assets/img/3d/implant.webp 720w" sizes="(max-width: 900px) 45vw, 320px" alt="" width="720" height="720" loading="lazy">
         </article>
@@ -513,6 +522,7 @@
             <span class="tile-tag">Spielerisch &amp; behutsam</span>
             <h3>Kinderzahnheilkunde</h3>
             <p>Wir nehmen uns Zeit, damit Kinder ohne Angst und gerne zu uns kommen.</p>
+            <a class="tile-link tile-cta" href="termin.html?leistung=kinder">Termin anfragen<svg class="ico"><use href="#i-arrow"/></svg></a>
           </div>
         </article>
 
@@ -534,6 +544,7 @@
             <span class="tile-tag">Angstfrei</span>
             <h3>Vollnarkose &amp; Dämmerschlaf</h3>
             <p>Für Angstpatienten, Kinder oder größere Eingriffe. Sie entspannen, wir kümmern uns um den Rest.</p>
+            <a class="tile-link tile-cta" href="termin.html?leistung=narkose">Termin anfragen<svg class="ico"><use href="#i-arrow"/></svg></a>
           </div>
         </article>
 
@@ -617,7 +628,7 @@
             <span class="chapter-icon"><svg class="ico"><use href="#i-team"/></svg></span>
             <h3>Alles aus einer Hand</h3>
             <p>Ein Team und feste Ansprechpartner, von der ersten Planung bis zum fertigen Zahn.</p>
-            <a class="btn btn-glow" href="#kontakt" data-magnetic>Beratung vereinbaren<svg class="ico"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-glow" href="termin.html?leistung=zahnersatz" data-magnetic>Beratung vereinbaren<svg class="ico"><use href="#i-arrow"/></svg></a>
           </li>
         </ul>
       </div>
@@ -693,7 +704,7 @@
           <li data-reveal style="--d:.08s"><svg class="ico"><use href="#i-check"/></svg>Für Kinder und umfangreiche Eingriffe</li>
           <li data-reveal style="--d:.16s"><svg class="ico"><use href="#i-check"/></svg>Ausführliches Vorgespräch und Aufklärung</li>
         </ul>
-        <a class="btn btn-glow btn-lg" href="#kontakt" data-magnetic data-reveal>Vorgespräch vereinbaren<svg class="ico"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-glow btn-lg" href="termin.html?leistung=narkose" data-magnetic data-reveal>Vorgespräch vereinbaren<svg class="ico"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
@@ -819,8 +830,10 @@
         <a class="big-phone" href="tel:+49610523604" data-reveal>06105 / 23604</a>
         <div class="contact-actions" data-reveal>
           <a class="btn btn-glow btn-lg" href="tel:+49610523604" data-magnetic><svg class="ico"><use href="#i-phone"/></svg>Jetzt anrufen</a>
+          <a class="btn btn-line btn-lg" href="termin.html"><svg class="ico"><use href="#i-calendar"/></svg>Online-Termin anfragen</a>
           <button class="btn btn-line btn-lg" type="button" id="copy-phone" data-copy="06105 23604"><svg class="ico"><use href="#i-copy"/></svg><span>Nummer kopieren</span></button>
         </div>
+        <a class="contact-mail" href="mailto:Kontakt@klar-zahn.de" data-reveal>kontakt@klar-zahn.de</a>
       </div>
 
       <div class="contact-grid">
@@ -896,6 +909,7 @@
         <li><a href="#ratgeber">Ratgeber</a></li>
           <li><a href="#praxis">Über uns</a></li>
           <li><a href="#faq">FAQ</a></li>
+          <li><a href="termin.html">Online-Termin</a></li>
         </ul>
       </nav>
       <div class="footer-col">
@@ -904,6 +918,7 @@
           <li><svg class="ico"><use href="#i-phone"/></svg><a href="tel:+49610523604">06105 / 23604</a></li>
           <li><svg class="ico"><use href="#i-pin"/></svg><span>Opelstraße 2<br>64546 Mörfelden-Walldorf</span></li>
           <li><svg class="ico"><use href="#i-clock"/></svg><a href="#kontakt">Sprechzeiten</a></li>
+          <li><svg class="ico"><use href="#i-chat"/></svg><a href="mailto:Kontakt@klar-zahn.de">kontakt@klar-zahn.de</a></li>
         </ul>
       </div>
     </div>
@@ -942,15 +957,15 @@
   </div>
 </footer>
 
-<a class="float-cta" href="#kontakt" aria-label="Termin vereinbaren" data-float-cta>
+<a class="float-cta" href="termin.html" aria-label="Termin online anfragen" data-float-cta>
   <svg class="float-cta-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="cta-circle" d="M100 100m-76 0a76 76 0 1 1 152 0a76 76 0 1 1-152 0"/></defs><text><textPath href="#cta-circle" textLength="476" lengthAdjust="spacing">TERMIN VEREINBAREN · 06105 23604 · </textPath></text></svg>
   <span class="float-cta-core"><svg class="ico"><use href="#i-calendar"/></svg></span>
 </a>
 
 <div class="mobile-bar">
   <a class="mb-btn mb-call" href="tel:+49610523604"><svg class="ico"><use href="#i-phone"/></svg>Anrufen</a>
+  <a class="mb-btn" href="termin.html"><svg class="ico"><use href="#i-calendar"/></svg>Termin</a>
   <a class="mb-btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=Opelstra%C3%9Fe+2%2C+64546+M%C3%B6rfelden-Walldorf" target="_blank" rel="noopener"><svg class="ico"><use href="#i-route"/></svg>Route</a>
-  <a class="mb-btn" href="#kontakt"><svg class="ico"><use href="#i-clock"/></svg>Zeiten</a>
 </div>
 <!--KZ:CONTENT-END-->
 

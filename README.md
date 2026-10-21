@@ -1,4 +1,4 @@
-# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 4)
+# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 5)
 
 Site vitrine statique (HTML/CSS/JS, sans framework) pour le cabinet dentaire de Mikel Salloum,
 Opelstraße 2, 64546 Mörfelden-Walldorf. Page d'accueil + Impressum + Datenschutz, en allemand.
@@ -21,6 +21,11 @@ En ligne : https://contactnasriimen-ctrl.github.io/klar-zahn/
 - `admin.html` (lien « Praxis-Login » en bas de page) : le docteur se connecte et écrit, publie, modifie ou supprime ses articles.
 - Stockage : Firebase (gratuit). **Configuration à faire une fois : voir [FIREBASE_SETUP.md](FIREBASE_SETUP.md).**
   Tant qu'elle n'est pas faite, le site affiche 3 articles d'exemple.
+
+## Online-Terminanfrage (nouveau)
+- Page `termin.html` : prestation → calendrier et créneaux → coordonnées → envoi à **Kontakt@klar-zahn.de**.
+- **Activation unique obligatoire** de l’envoi : voir [TERMIN.md](TERMIN.md).
+- Les pages `ratgeber.html` et `termin.html` sont générées par `npm run pages` (à relancer après une modification du menu ou du pied de page dans `index.html`).
 
 ## Aperçu local
 Double-cliquer sur `index.html` (aucun serveur nécessaire).

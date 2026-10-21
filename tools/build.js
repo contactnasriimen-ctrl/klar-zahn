@@ -15,7 +15,8 @@ const bundles = [
 
 const minified = [
   ["assets/style.css", "assets/style.min.css"],
-  ["assets/main.js", "assets/main.min.js"]
+  ["assets/main.js", "assets/main.min.js"],
+  ["assets/booking.js", "assets/booking.min.js"]
 ];
 
 Promise.all(bundles.map(function (b) {
