@@ -12,8 +12,14 @@
   /* ---------- Schwere Skripte erst nach dem Laden (schnellere erste Anzeige) ---------- */
   function loadScript(src) { var s = document.createElement("script"); s.src = src; s.async = true; document.body.appendChild(s); }
   if (document.querySelector("[data-hero-3d], [data-lab-3d]")) {
-    var start3d = function () { (window.requestIdleCallback || function (f) { return setTimeout(f, 250); })(function () { loadScript("assets/js/scenes3d.js"); }, { timeout: 1800 }); };
-    if (document.readyState === "complete") start3d(); else window.addEventListener("load", start3d);
+    var loaded3d = false, wake = ["pointermove", "pointerdown", "touchstart", "scroll", "keydown", "wheel"];
+    var start3d = function () {
+      if (loaded3d) return;
+      loaded3d = true;
+      wake.forEach(function (t) { window.removeEventListener(t, start3d); });
+      loadScript("assets/js/scenes3d.js");
+    };
+    wake.forEach(function (t) { window.addEventListener(t, start3d, { passive: true }); });
   }
   var blogTarget = document.querySelector("[data-blog], [data-latest-posts]");
   if (blogTarget) {
@@ -499,9 +505,12 @@
   if (!reduce && (skewEls.length || kinRows.length)) {
     var lastY = window.scrollY, vel = 0, kinX = kinRows.map(function () { return 0; }), kinVisible = false;
     if ("IntersectionObserver" in window && kinRows.length) {
-      new IntersectionObserver(function (en) { kinVisible = en[0].isIntersecting; }).observe(kinRows[0].parentElement);
+      new IntersectionObserver(function (en) { kinVisible = en[0].isIntersecting; if (kinVisible) kickSpeed(); }).observe(kinRows[0].parentElement);
     }
-    (function speedLoop() {
+    var speedRunning = false;
+    function kickSpeed() { if (!speedRunning) { speedRunning = true; window.requestAnimationFrame(speedLoop); } }
+    window.addEventListener("scroll", kickSpeed, { passive: true });
+    function speedLoop() {
       var y = window.scrollY;
       vel += ((y - lastY) - vel) * 0.18;
       lastY = y;
@@ -517,8 +526,13 @@
           track.style.transform = "translateX(" + kinX[i].toFixed(1) + "px)";
         });
       }
+      if (!kinVisible && Math.abs(vel) < 0.05) {
+        speedRunning = false; vel = 0;
+        skewEls.forEach(function (el) { el.style.setProperty("--skew", "0deg"); });
+        return;
+      }
       window.requestAnimationFrame(speedLoop);
-    })();
+    }
   }
 
   /* ---------- Runder Termin-Button erscheint nach dem Hero ---------- */
