@@ -61,7 +61,8 @@ function foot(scripts) {
   return `
 ${fixLinks(footer)}
 <script src="assets/js/firebase-config.js" defer></script>
-<script src="assets/main.min.js" defer></script>${scripts || ""}
+<script src="assets/main.min.js" defer></script>
+<script src="assets/consent.min.js" defer></script>${scripts || ""}
 </body>
 </html>
 `;

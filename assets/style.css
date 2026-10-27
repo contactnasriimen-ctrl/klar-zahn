@@ -1793,3 +1793,32 @@ section[id], [id^="leistung-"] { scroll-margin-top: 100px; }
   [data-reveal].rv .ico { stroke-dashoffset: 0; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* =========================================================================
+   Version 11: Cookie-Hinweis, ohne Intro und Cursor-Ring
+   ========================================================================= */
+:root { --intro: 0s; }
+.intro, .cursor-ring { display: none !important; }
+.cookie-banner {
+  position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 200;
+  width: min(calc(100% - 32px), 880px); translate: -50% 30px; opacity: 0;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px;
+  padding: 18px 20px; border-radius: 24px; background: color-mix(in srgb, var(--paper) 94%, transparent);
+  border: 1px solid var(--line); box-shadow: 0 30px 70px -30px color-mix(in srgb, var(--forest) 70%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: translate .5s var(--ease-out), opacity .4s ease;
+}
+.cookie-banner.is-on { translate: -50% 0; opacity: 1; }
+.cookie-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--mint-tint); font-size: 26px; }
+.cookie-text strong { display: block; margin-bottom: 4px; font-family: var(--font-display); color: var(--forest); }
+.cookie-text p { font-size: .9rem; line-height: 1.5; color: var(--muted); }
+.cookie-text a { color: var(--mint-ink); font-weight: 700; }
+.cookie-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.cookie-actions .btn { padding: 11px 18px; font-size: .92rem; color: var(--forest); }
+.cookie-actions .btn-glow { color: var(--night); }
+.legal-footer a + a { margin-left: 16px; }
+@media (max-width: 760px) {
+  .cookie-banner { grid-template-columns: minmax(0, 1fr); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); gap: 12px; }
+  .cookie-icon { display: none; }
+  .cookie-actions .btn { flex: 1 1 auto; }
+}

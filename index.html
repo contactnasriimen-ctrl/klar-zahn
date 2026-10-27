@@ -37,7 +37,6 @@
   <link rel="preload" href="assets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="assets/img/photos/hero-laechelnde-patientin.webp" imagesrcset="assets/img/photos/hero-laechelnde-patientin-600.webp 600w, assets/img/photos/hero-laechelnde-patientin.webp 1000w" imagesizes="(max-width: 600px) 80vw, 440px" fetchpriority="high">
   <style>@font-face{font-family:"Figtree";font-style:normal;font-weight:400 700;font-display:block;src:url(assets/fonts/figtree-latin.woff2) format("woff2")}@font-face{font-family:"Lexend";font-style:normal;font-weight:300 700;font-display:block;src:url(assets/fonts/lexend-latin.woff2) format("woff2")}@font-face{font-family:"Instrument Serif";font-style:italic;font-weight:400;font-display:block;src:url(assets/fonts/instrument-serif-italic-latin.woff2) format("woff2")}</style>
-  <script>try{if(sessionStorage.getItem("kz-intro"))document.documentElement.classList.add("no-intro");sessionStorage.setItem("kz-intro","1")}catch(e){}</script>
   <link rel="stylesheet" href="assets/style.min.css">
   <script type="application/ld+json">
   {
@@ -283,12 +282,7 @@
   </defs>
 </svg>
 
-<!-- Intro (verschwindet automatisch) -->
-<div class="intro" aria-hidden="true">
-  <img src="assets/img/3d/tooth-400.webp" srcset="assets/img/3d/tooth-400.webp 400w, assets/img/3d/tooth.webp 720w" sizes="(max-width: 900px) 45vw, 320px" alt="" width="720" height="720">
-  <span>Klar Zahn</span>
-</div>
-
+<!-- Intro -->
 <div class="progress" aria-hidden="true"><span data-progress></span></div>
 <div class="cursor-light" aria-hidden="true"></div>
 
@@ -947,10 +941,11 @@
     <p class="wordmark" aria-hidden="true">Klar Zahn</p>
     <div class="footer-bottom">
       <p>© <span data-year>2026</span> Klar Zahn · Zahnarzt Mikel Salloum</p>
-      <a class="made-by" href="https://over-tech.de/" target="_blank" rel="noopener"><span class="made-by-spark" aria-hidden="true"></span>Made by <strong>OverTech</strong></a>
+      <a class="made-by" href="https://over-tech.de/" target="_blank" rel="noopener"><span class="made-by-spark" aria-hidden="true"></span>Erstellt von <strong>OverTech</strong></a>
       <nav aria-label="Rechtliches">
         <a href="impressum.html">Impressum</a>
         <a href="datenschutz.html">Datenschutz</a>
+        <a href="#" data-cookie-settings>Cookie-Einstellungen</a>
         <a href="admin.html">Praxis-Login</a>
       </nav>
     </div>
@@ -971,5 +966,6 @@
 
 <script src="assets/js/firebase-config.js" defer></script>
 <script src="assets/main.min.js" defer></script>
+<script src="assets/consent.min.js" defer></script>
 </body>
 </html>

@@ -74,9 +74,9 @@ export function initHero() {
   scene.add(particles);
 
   /* Magie: Seifenblasen, Feenstaub, Sternfunkeln */
-  const bubbles = makeBubbles(window.innerWidth < 700 ? 6 : 10, 1.7);
+  const bubbles = makeBubbles(window.innerWidth < 700 ? 4 : 7, 1.7);
   scene.add(bubbles);
-  const dust = makeFairyDust(window.innerWidth < 700 ? 170 : 340, 1.95);
+  const dust = makeFairyDust(window.innerWidth < 700 ? 110 : 220, 1.95);
   scene.add(dust);
   const glints = makeGlints([[0.8, 0.98, 0.42], [-0.98, 0.3, 0.42], [0.42, -0.98, 0.46], [-0.25, 1.08, 0.4]], 0xe2b453);
   tooth.add(glints);

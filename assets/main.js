@@ -550,41 +550,6 @@
     });
   }
 
-  /* ---------- Eigener Cursor-Ring mit Beschriftung ---------- */
-  if (finePointer && !reduce) {
-    var ring = document.createElement("div");
-    ring.className = "cursor-ring";
-    ring.setAttribute("aria-hidden", "true");
-    ring.innerHTML = "<span></span>";
-    document.body.appendChild(ring);
-    var ringLabel = ring.firstChild, rx = -100, ry = -100, rtx = -100, rty = -100, ringOn = false;
-    var labels = [[".hero-3d", "Drehen"], [".post-card", "Lesen"], [".tile", "Entdecken"], [".map-card", "Route"], [".rb-item", ""], ["a, button, summary", ""]];
-    window.addEventListener("pointermove", function (e) {
-      rtx = e.clientX; rty = e.clientY;
-      var label = null;
-      for (var i = 0; i < labels.length; i++) { if (e.target.closest && e.target.closest(labels[i][0])) { label = labels[i][1]; break; } }
-      ring.classList.toggle("is-hover", label !== null);
-      ring.classList.toggle("has-label", !!label);
-      if (label) ringLabel.textContent = label;
-      if (!ringOn) { ringOn = true; rx = rtx; ry = rty; ring.classList.add("is-on"); (function follow() {
-        rx += (rtx - rx) * 0.2; ry += (rty - ry) * 0.2;
-        ring.style.transform = "translate(" + rx.toFixed(1) + "px," + ry.toFixed(1) + "px)";
-        if (ringOn) window.requestAnimationFrame(follow);
-      })(); }
-    }, { passive: true });
-    document.addEventListener("pointerleave", function () { ringOn = false; ring.classList.remove("is-on"); });
-    window.addEventListener("scroll", function () {
-      if (!ringOn) return;
-      var el = document.elementFromPoint(rtx, rty), label = null;
-      for (var i = 0; el && i < labels.length; i++) { if (el.closest(labels[i][0])) { label = labels[i][1]; break; } }
-      ring.classList.toggle("is-hover", label !== null);
-      ring.classList.toggle("has-label", !!label);
-      if (label) ringLabel.textContent = label;
-    }, { passive: true });
-    window.addEventListener("pointerdown", function () { ring.classList.add("is-down"); });
-    window.addEventListener("pointerup", function () { ring.classList.remove("is-down"); });
-  }
-
   /* ---------- Schillernde Blasen in hellen Abschnitten ---------- */
   if (!reduce) {
     $$(".services, .journal, .faq, .steps, .booking").forEach(function (sec) {
@@ -592,7 +557,7 @@
       box.className = "bubbles";
       box.setAttribute("aria-hidden", "true");
       var html = "";
-      for (var i = 0; i < 9; i++) {
+      for (var i = 0; i < 5; i++) {
         html += "<span style=\"--x:" + Math.round(Math.random() * 96) + "%;--s:" + Math.round(10 + Math.random() * 34) + "px;--t:" + (14 + Math.random() * 16).toFixed(1) + "s;--dl:-" + (Math.random() * 20).toFixed(1) + "s\"></span>";
       }
       box.innerHTML = html;
