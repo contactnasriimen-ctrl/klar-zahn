@@ -2256,10 +2256,10 @@ a.glass-card:hover { box-shadow: 0 0 0 2px var(--mint), 0 24px 50px -24px color-
    Version 13: Performance – weniger Dauer-Animationen, Abschnitte erst rendern, wenn sichtbar
    ========================================================================= */
 /* Abschnitte unterhalb des sichtbaren Bereichs werden erst gezeichnet, wenn man hinscrollt */
-.services, .lab, .steps, .calm, .about, .journal, .faq, .kinetic, .contact, .site-footer,
+.services, .lab, .steps, .calm, .about, .journal, .faq, .kinetic, .contact,
 .svc-contact, .svc-more, .svc-faq, .blog-body { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .services { contain-intrinsic-size: auto 1500px; }
-.lab, .contact, .site-footer { contain-intrinsic-size: auto 1100px; }
+.lab, .contact { contain-intrinsic-size: auto 1100px; }
 .kinetic { contain-intrinsic-size: auto 260px; }
 .svc-more { contain-intrinsic-size: auto 200px; }
 
