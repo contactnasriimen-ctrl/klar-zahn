@@ -2176,7 +2176,7 @@ a.glass-card:hover { box-shadow: 0 0 0 2px var(--mint), 0 24px 50px -24px color-
 .ov-card.is-lab li a:hover { background: var(--glass); color: var(--paper); }
 .ov-card.is-lab .ov-more, .ov-card.is-lab li .ico { color: var(--glow); }
 .ov-card.is-lab .topic-ico { color: var(--night); background: linear-gradient(145deg, var(--glow), var(--mint)); }
-.svc .mobile-bar { grid-template-columns: 1.6fr 1fr 1fr; }
+@media (max-width: 760px) { .mobile-bar { grid-template-columns: 1.5fr 1fr 1fr; } }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1240px) {
@@ -2251,3 +2251,57 @@ a.glass-card:hover { box-shadow: 0 0 0 2px var(--mint), 0 24px 50px -24px color-
 .sc-hours .hours td { white-space: nowrap; font-size: .94rem; }
 @media (max-width: 1080px) { .sc-card { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 420px) { .sc-hours .hours td { white-space: normal; } }
+
+/* =========================================================================
+   Version 13: Performance – weniger Dauer-Animationen, Abschnitte erst rendern, wenn sichtbar
+   ========================================================================= */
+/* Abschnitte unterhalb des sichtbaren Bereichs werden erst gezeichnet, wenn man hinscrollt */
+.services, .lab, .steps, .calm, .about, .journal, .faq, .kinetic, .contact, .site-footer,
+.svc-contact, .svc-more, .svc-faq, .blog-body { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+.services { contain-intrinsic-size: auto 1500px; }
+.lab, .contact, .site-footer { contain-intrinsic-size: auto 1100px; }
+.kinetic { contain-intrinsic-size: auto 260px; }
+.svc-more { contain-intrinsic-size: auto 200px; }
+
+/* Lichtrand der Kacheln läuft nur beim Darüberfahren (vorher: dauerhaft auf jeder Kachel) */
+.tile::after, .post-card::after { animation: none; }
+.tile:hover::after, .post-card:hover::after { animation: angle-spin 3.2s linear infinite; }
+
+/* Verlaufsschrift bleibt farbig, ohne Dauer-Neuzeichnen */
+.hero h1 em, .page-hero h1 em, .lab h2 em, .calm h2 em, .contact h2 em, .big-phone, .sc-main h2 em, .wordmark { animation: none; }
+.hero-floor { animation: none; }
+.grain { display: none; }
+.step-node { animation: none; }
+.tapes { will-change: transform; }
+
+/* Glas-Effekte ohne teure Unschärfe auf bewegten Elementen */
+.glass-card, .glass-pill, .lab-chip, .spin-text, .hero-3d-hint { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.glass-card, .glass-pill { background: color-mix(in srgb, var(--paper) 94%, transparent); }
+.lab-chip, .spin-text { background: color-mix(in srgb, var(--paper) 92%, transparent); }
+
+/* Termin-Puls: nur auf Geräten mit Maus */
+@media (hover: none), (max-width: 900px) {
+  .btn-glow.pulse { animation: none; }
+  .hero-actions .btn-glow.pulse { animation: fade-up .7s var(--ease-out) both; }
+}
+
+/* Smartphones: ruhigere Bühne, kein Blur beim Scrollen */
+@media (max-width: 900px) {
+  .aurora, .beams, .jl, .stage-ring.sr-1, .spin-text > svg:first-child, .float-cta-ring { animation: none; }
+  .header-bar, .site-header.is-light .header-bar { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .site-header.is-light .header-bar { background: color-mix(in srgb, var(--paper) 96%, transparent); }
+  .mobile-bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: color-mix(in srgb, var(--night) 97%, transparent); }
+  .cookie-banner { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
+  .bubbles { display: none; }
+  .hero-title .line > span { animation-duration: .8s; }
+  .hero-lead, .hero-actions, .hero-trust, .hero-stage { animation-duration: .7s; animation-delay: 0s; }
+}
+.no-3d .hero-3d-hint { display: none; }
+
+/* Version 13b: Ersatzschriften mit gleichen Maßen – kein Verspringen, wenn die Webfonts nachladen */
+:root {
+  --font-display: "Lexend", "Lexend Fallback", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Figtree", "Figtree Fallback", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-accent: "Instrument Serif", "Instrument Fallback", Georgia, "Times New Roman", serif;
+}
+

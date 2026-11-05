@@ -214,7 +214,8 @@ function write(file, s) {
   const depth = file.split("/").length - 1;
   const out = ROOT + (file.endsWith("/") ? file + "index.html" : file);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, relocate(img3dPage(s), "../".repeat(depth)));
+  /* Einrückungen entfernen: kleinere HTML-Dateien */
+  fs.writeFileSync(out, relocate(img3dPage(s), "../".repeat(depth)).replace(/\n[ \t]+/g, "\n").replace(/\n{2,}/g, "\n"));
 }
 const heroBg = `
     <div class="hero-bg" aria-hidden="true">

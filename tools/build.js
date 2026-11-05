@@ -20,6 +20,26 @@ const minified = [
   ["assets/consent.js", "assets/consent.min.js"]
 ];
 
+/* Nicht verwendete CSS-Regeln entfernen (Klassen aus allen Seiten, Skripten und WordPress-Vorlagen bleiben erhalten) */
+async function purgeCss() {
+  const fs = require("fs");
+  const { PurgeCSS } = require("purgecss");
+  const file = path.join(root, "assets/style.min.css");
+  const before = fs.statSync(file).size;
+  const g = (p) => path.join(root, p).replace(/\\/g, "/");
+  const [result] = await new PurgeCSS().purge({
+    content: [g("*.html"), g("leistungen/**/*.html"), g("praxislabor/**/*.html"), g("assets/main.js"), g("assets/booking.js"), g("assets/consent.js"), g("src/**/*.js"), g("wp/**/*.php")],
+    css: [file],
+    safelist: {
+      standard: [/^is-/, /^has-/, /^tone-/, /^fit-/, /^kz-/, /^no-3d$/, /^rv$/, /^lab-js$/, /^enter-/, /^menu-open$/, /^w$/, /^w-/, /^post-/],
+      greedy: [/view-transition/]
+    },
+    keyframes: false, fontFace: false, variables: false
+  });
+  fs.writeFileSync(file, result.css);
+  console.log("  style.min.css: " + Math.round(before / 1024) + " KB → " + Math.round(result.css.length / 1024) + " KB (ungenutzte Regeln entfernt)");
+}
+
 Promise.all(bundles.map(function (b) {
   return esbuild.build({
     entryPoints: [path.join(root, b[0])],
@@ -28,4 +48,4 @@ Promise.all(bundles.map(function (b) {
   });
 }).concat(minified.map(function (f) {
   return esbuild.build({ entryPoints: [path.join(root, f[0])], outfile: path.join(root, f[1]), bundle: false, minify: true, logLevel: "info" });
-}))).catch(function () { process.exit(1); });
+}))).then(purgeCss).catch(function (e) { console.error(e); process.exit(1); });

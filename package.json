@@ -5,10 +5,12 @@
   "description": "Website Klar Zahn – Zahnmedizin & Zahntechnik, Mörfelden-Walldorf",
   "scripts": {
     "build": "node tools/build.js",
-    "pages": "node tools/pages.js"
+    "pages": "node tools/pages.js",
+    "wp": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tools/wp-theme.js"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "purgecss": "^6.0.0"
   },
   "dependencies": {
     "firebase": "^10.14.1"

@@ -14,7 +14,11 @@
   var me = document.currentScript && document.currentScript.src;
   var BASE = me ? me.replace(/assets\/main(\.min)?\.js.*$/, "") : "";
   function loadScript(src) { var s = document.createElement("script"); s.src = BASE + src; s.async = true; document.body.appendChild(s); }
-  if (document.querySelector("[data-hero-3d], [data-lab-3d]")) {
+  /* Live-3D nur auf Geräten mit Maus, ausreichend Bildschirm und Speicher – sonst bleibt das 3D-Bild */
+  var conn = navigator.connection || {};
+  var can3d = finePointer && window.innerWidth >= 900 && !conn.saveData && (navigator.deviceMemory || 8) >= 4;
+  if (!can3d) document.documentElement.classList.add("no-3d");
+  if (can3d && document.querySelector("[data-hero-3d], [data-lab-3d]")) {
     var loaded3d = false, wake = ["pointermove", "pointerdown", "touchstart", "scroll", "keydown", "wheel"];
     var start3d = function () {
       if (loaded3d) return;
@@ -558,7 +562,7 @@
   }
 
   /* ---------- Schillernde Blasen in hellen Abschnitten ---------- */
-  if (!reduce) {
+  if (!reduce && window.innerWidth >= 900) {
     $$(".services, .journal, .faq, .steps, .booking").forEach(function (sec) {
       var box = document.createElement("div");
       box.className = "bubbles";

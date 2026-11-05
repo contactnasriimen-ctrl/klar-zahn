@@ -20,6 +20,8 @@
 
   var form = document.querySelector("[data-booking-form]");
   if (!form) return;
+  /* WordPress-Theme: eigener Endpunkt (data-endpoint), sonst FormSubmit */
+  ENDPOINT = form.getAttribute("data-endpoint") || ENDPOINT;
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

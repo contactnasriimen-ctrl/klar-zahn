@@ -1,0 +1,27 @@
+/* Klar Zahn – Ergänzungen für WordPress (Adminleiste, Blog-Seiten, Inhalte aus dem Block-Editor) */
+.admin-bar .site-header { top: 32px; }
+@media (max-width: 782px) { .admin-bar .site-header { top: 46px; } }
+@media (max-width: 600px) { .admin-bar .site-header { top: 0; } #wpadminbar { position: absolute; } }
+.screen-reader-text { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+.legal-wp { padding-top: 180px; background: var(--cloud); }
+.legal-wp .legal { margin-inline: auto; }
+@media (max-width: 640px) { .legal-wp { padding-top: 140px; } }
+.blog-single { padding-top: 170px; }
+@media (max-width: 640px) { .blog-single { padding-top: 140px; } }
+a.chip-filter { text-decoration: none; display: inline-block; }
+.kz-pagination { margin-top: 36px; }
+.kz-pagination ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.kz-pagination .page-numbers { display: inline-block; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--forest); font-weight: 700; text-decoration: none; }
+.kz-pagination .current { background: var(--forest); border-color: var(--forest); color: var(--paper); }
+.post-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.post-tags a { padding: 6px 12px; border-radius: 999px; background: var(--mint-tint); color: var(--forest); font-weight: 600; font-size: .9rem; text-decoration: none; }
+.prose figure { margin: 1.6em 0; }
+.prose figcaption, .wp-caption-text { margin-top: 8px; color: var(--muted); font-size: .9rem; text-align: center; }
+.prose .wp-block-image img { height: auto; }
+.prose .alignwide, .prose .alignfull { width: 100%; }
+.alignleft { float: left; margin: .3em 1.4em 1em 0; }
+.alignright { float: right; margin: .3em 0 1em 1.4em; }
+.aligncenter { display: block; margin-inline: auto; }
+.prose .wp-block-button__link { display: inline-flex; padding: 13px 22px; border-radius: 999px; background: linear-gradient(135deg, var(--glow), var(--mint)); color: var(--night); font-weight: 700; text-decoration: none; }
+.prose table { width: 100%; border-collapse: collapse; }
+.prose th, .prose td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }

@@ -1,0 +1,14 @@
+/*
+Theme Name: Klar Zahn
+Theme URI: https://over-tech.de/
+Author: OverTech
+Author URI: https://over-tech.de/
+Description: Theme der Zahnarztpraxis Klar Zahn – Zahnmedizin & Zahntechnik in Mörfelden-Walldorf. Bei der Aktivierung werden Startseite, alle Leistungs- und Praxislabor-Seiten, Online-Termin, Impressum, Datenschutz und der Blog automatisch angelegt.
+Version: 1.0.0
+Requires at least: 6.3
+Requires PHP: 7.4
+Text Domain: klar-zahn
+Tags: one-column, custom-menu, featured-images, blog
+*/
+
+/* Die Gestaltung liegt in assets/style.min.css (Website) und assets/wp.css (WordPress-Ergänzungen). */

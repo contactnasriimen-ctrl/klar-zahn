@@ -1,4 +1,4 @@
-# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 6)
+# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 7)
 
 Site statique (HTML/CSS/JS, sans framework) pour le cabinet dentaire de Mikel Salloum,
 Opelstraße 2, 64546 Mörfelden-Walldorf. En allemand.
@@ -56,6 +56,21 @@ ainsi que le menu, le bento, les horaires, les villes et les données structuré
 Aucune photo de stock : le site utilise uniquement des rendus 3D (`assets/img/3d/`), des icônes et le logo.
 Images de partage (réseaux sociaux) : `assets/img/og-image.jpg` et une par rubrique dans `assets/img/og/`.
 Vraies photos du cabinet et du docteur : à ajouter dès qu'elles sont disponibles (photo du docteur : `images/mikel-salloum.jpg`, vertical 4:5, ≥ 1000 px de large).
+
+## Thème WordPress
+- Sources PHP : `wp/klar-zahn/`. Construction : `npm run pages && npm run build && npm run wp`
+  → `dist/klar-zahn-wordpress-theme.zip` (à installer via Apparence → Thèmes → Téléverser).
+- À l'activation, le thème crée les 61 pages (mêmes adresses que le site statique), le blog
+  (articles WordPress natifs, 3 exemples) et règle page d'accueil, page des articles et permaliens.
+- Rendez-vous : envoyés par WordPress (REST `/wp-json/klarzahn/v1/termin`, `wp_mail`) à l'adresse
+  définie dans Apparence → Klar Zahn. Conseillé : plugin SMTP (ex. WP Mail SMTP).
+- Mode d'emploi pour le cabinet (en allemand) : `wp/klar-zahn/readme.txt`.
+
+## Performance
+- Sections hors écran rendues à la demande (`content-visibility`), animations décoratives coûteuses
+  désactivées ou limitées au survol, pas de flou sur les éléments animés, 3D en direct seulement sur
+  ordinateur (souris, écran ≥ 900 px), polices de secours aux mêmes dimensions (pas de saut à l'affichage),
+  CSS réduit automatiquement par PurgeCSS (`npm run build`), HTML des pages générées allégé.
 
 ## Aperçu local
 Les pages de prestations utilisent des adresses de dossier (`leistungen/zahnerhalt/`) : lancer un petit serveur local,
