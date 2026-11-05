@@ -46,7 +46,7 @@ Villes voisines indiquées à Google (zone desservie) : Kelsterbach, Rüsselshei
 ## Exemples de posts prêts à publier
 **1. Meisterlabor**
 > Zahnersatz, der in unserem Haus entsteht: Zahnarzt und Zahntechnikermeister arbeiten bei uns Tür an Tür. Kurze Wege, präzise Passform, schnelle Reparaturen. 🦷
-> 📍 Opelstraße 2, Mörfelden-Walldorf · ☎ 06105 / 23604
+> 📍 Opelstraße 2, Mörfelden-Walldorf · ☎ 06105 23604
 > #ZahnarztMörfeldenWalldorf #Meisterlabor #Zahnersatz #Zahnkrone #KlarZahn #MörfeldenWalldorf
 
 **2. Angstfrei**

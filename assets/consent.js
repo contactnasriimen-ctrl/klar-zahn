@@ -3,6 +3,8 @@
 (function () {
   "use strict";
   var KEY = "kz-consent-v1";
+  var me = document.currentScript && document.currentScript.src;
+  var BASE = me ? me.replace(/assets\/consent(\.min)?\.js.*$/, "") : "";
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem(KEY, v); } catch (e) { /* privater Modus */ } }
 
@@ -18,7 +20,7 @@
       '<div class="cookie-text"><strong>Ihre Privatsphäre ist uns wichtig</strong>' +
       '<p>Wir verwenden keine Tracking- oder Werbe-Cookies. Technisch notwendig gespeichert wird nur Ihre Auswahl in diesem Hinweis. ' +
       'Externe Dienste (Google Maps, Ratgeber-Artikel, Online-Terminanfrage) werden erst genutzt, wenn Sie die jeweilige Funktion aufrufen. ' +
-      'Mehr in der <a href="datenschutz.html">Datenschutzerklärung</a> und im <a href="impressum.html">Impressum</a>.</p></div>' +
+      'Mehr in der <a href="' + BASE + 'datenschutz.html">Datenschutzerklärung</a> und im <a href="' + BASE + 'impressum.html">Impressum</a>.</p></div>' +
       '<div class="cookie-actions">' +
       '<button type="button" class="btn btn-line" data-c="necessary">Nur notwendige</button>' +
       '<button type="button" class="btn btn-glow" data-c="all">Alle akzeptieren</button></div>';

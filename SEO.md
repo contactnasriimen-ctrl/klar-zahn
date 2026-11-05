@@ -20,7 +20,7 @@
 ## À faire (par vous ou le client) – c'est ce qui compte le plus pour le local
 1. **Google Business Profile** (le plus important pour « Zahnarzt Mörfelden-Walldorf ») : https://business.google.com
    - Nom : *Klar Zahn – Zahnmedizin & Zahntechnik* · Catégorie principale : **Zahnarzt** · Adresse : Opelstraße 2, 64546 Mörfelden-Walldorf
-   - Téléphone 06105 / 23604, horaires (identiques au site), site web, **photos réelles** du cabinet, de l'équipe et du labo.
+   - Téléphone 06105 23604, horaires (identiques au site), site web, **photos réelles** du cabinet, de l'équipe et du labo.
    - Publier régulièrement des posts (voir HASHTAGS.md) et **demander des avis Google** aux patients satisfaits.
 2. **Google Search Console** : https://search.google.com/search-console
    - Ajouter la propriété « préfixe d'URL » `https://contactnasriimen-ctrl.github.io/klar-zahn/` (validation par balise HTML : m'envoyer la balise, je l'ajoute).

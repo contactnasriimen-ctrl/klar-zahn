@@ -10,7 +10,10 @@
   var DAY_NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 
   /* ---------- Schwere Skripte erst nach dem Laden (schnellere erste Anzeige) ---------- */
-  function loadScript(src) { var s = document.createElement("script"); s.src = src; s.async = true; document.body.appendChild(s); }
+  /* Basis-URL der Website (Seiten liegen auch in Unterordnern wie leistungen/…/) */
+  var me = document.currentScript && document.currentScript.src;
+  var BASE = me ? me.replace(/assets\/main(\.min)?\.js.*$/, "") : "";
+  function loadScript(src) { var s = document.createElement("script"); s.src = BASE + src; s.async = true; document.body.appendChild(s); }
   if (document.querySelector("[data-hero-3d], [data-lab-3d]")) {
     var loaded3d = false, wake = ["pointermove", "pointerdown", "touchstart", "scroll", "keydown", "wheel"];
     var start3d = function () {
@@ -58,6 +61,7 @@
       return r.top <= probe && r.bottom >= probe;
     });
     header.classList.toggle("is-light", !overDark);
+    header.classList.toggle("is-scrolled", window.scrollY > 40);
   });
 
   /* ---------- Vollbild-Menü ---------- */
@@ -290,15 +294,19 @@
       return { day: d.getDay(), min: d.getHours() * 60 + d.getMinutes() };
     }
   }
+  /* Sprechzeiten aus der Tabelle der Seite, sonst diese Werte (wie tools/site-data.js) */
+  var DEFAULT_HOURS = { 1: "09:00-13:00,14:00-18:00", 2: "09:00-13:00,14:00-18:00", 3: "12:00-19:00", 4: "09:00-13:00,14:00-18:00", 5: "09:00-13:00" };
   var table = $("[data-hours-table]");
-  if (table) {
+  if (table || $("[data-open-short], [data-open-status]")) {
     var schedule = {};
-    $$("tr[data-day]", table).forEach(function (row) {
-      schedule[row.getAttribute("data-day")] = (row.getAttribute("data-hours") || "").split(",").filter(Boolean).map(function (range) {
+    var parse = function (v) {
+      return (v || "").split(",").filter(Boolean).map(function (range) {
         var r = range.split("-");
         return [toMinutes(r[0]), toMinutes(r[1])];
       });
-    });
+    };
+    if (table) $$("tr[data-day]", table).forEach(function (row) { schedule[row.getAttribute("data-day")] = parse(row.getAttribute("data-hours")); });
+    else Object.keys(DEFAULT_HOURS).forEach(function (d) { schedule[d] = parse(DEFAULT_HOURS[d]); });
     var now = berlinNow();
     var slot = (schedule[now.day] || []).filter(function (s) { return now.min >= s[0] && now.min < s[1]; })[0];
     var text = "Geschlossen";
@@ -316,14 +324,13 @@
         }
       }
     }
-    var todayRow = $('tr[data-day="' + now.day + '"]', table);
-    if (todayRow) todayRow.classList.add("is-today");
-    var pill = $("[data-open-pill]");
-    if (pill) {
+    $$('[data-hours-table] tr[data-day="' + now.day + '"]').forEach(function (row) { row.classList.add("is-today"); });
+    document.documentElement.classList.toggle("kz-open", !!slot);
+    $$("[data-open-pill]").forEach(function (pill) {
       pill.textContent = slot ? "Jetzt geöffnet" : "Geschlossen";
       pill.classList.toggle("is-closed", !slot);
       pill.hidden = false;
-    }
+    });
     $$("[data-open-short]").forEach(function (el) { el.textContent = slot ? "Jetzt geöffnet · bis " + fmt(slot[1]) : shortText; });
     $$("[data-open-status]").forEach(function (el) { el.textContent = text + ". Termine auch nach Vereinbarung."; });
   }

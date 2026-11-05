@@ -6,11 +6,11 @@
 
   var ENDPOINT = "https://formsubmit.co/ajax/Kontakt@klar-zahn.de";
   var MAIL = "Kontakt@klar-zahn.de";
-  /* Sprechzeiten in Minuten (wie auf der Startseite): Tag 0 = Sonntag */
+  /* Sprechzeiten in Minuten (wie tools/site-data.js): Tag 0 = Sonntag */
   var HOURS = {
     1: [[540, 780], [840, 1080]],
-    2: [[540, 780], [840, 1140]],
-    3: [[810, 1170]],
+    2: [[540, 780], [840, 1080]],
+    3: [[720, 1140]],
     4: [[540, 780], [840, 1080]],
     5: [[540, 780]]
   };
@@ -272,7 +272,7 @@
   });
 
   function sendFailed(data) {
-    errorBox.innerHTML = "Die Anfrage konnte gerade nicht automatisch gesendet werden. Bitte rufen Sie uns an unter <a href=\"tel:+49610523604\">06105 / 23604</a> " +
+    errorBox.innerHTML = "Die Anfrage konnte gerade nicht automatisch gesendet werden. Bitte rufen Sie uns an unter <a href=\"tel:+49610523604\">06105 23604</a> " +
       'oder <a href="' + mailtoLink(data) + '">senden Sie die Anfrage per E-Mail</a> (Ihre Angaben sind bereits eingetragen).';
     errorBox.hidden = false;
   }

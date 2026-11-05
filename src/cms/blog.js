@@ -114,7 +114,7 @@ async function initPage() {
       '<div class="prose">' + html + "</div>" +
       tagsHtml(a.tags) +
       '<aside class="post-cta"><div><strong>Fragen zu diesem Thema?</strong><span>Wir beraten Sie gerne persönlich in unserer Praxis.</span></div>' +
-      '<a class="btn btn-glow" href="tel:+49610523604"><svg class="ico"><use href="#i-phone"/></svg>06105 / 23604</a></aside>' +
+      '<a class="btn btn-glow" href="tel:+49610523604"><svg class="ico"><use href="#i-phone"/></svg>06105 23604</a></aside>' +
       '<p class="post-author">Veröffentlicht von ' + escapeHtml(a.author || "Praxis Klar Zahn") + "</p>";
     return;
   }
