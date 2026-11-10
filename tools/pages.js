@@ -57,7 +57,7 @@ fill("MEGA", GROUPS.slice(0, 10).map((g) => `
               <a class="mega-item" href="${g.path}"><span class="mega-ico">${ico(g.icon)}</span><span class="mega-txt"><strong>${esc(g.short || g.name)}</strong><small>${MEGA_TAGS[g.key]}</small></span></a>`).join("") + "\n            ");
 fill("MSUB", GROUPS.map((g) => `<li><a href="${g.path}">${ico(g.icon)}${esc(g.short || g.name)}</a></li>`).join(""));
 fill("FLIST", GROUPS.slice(0, 10).map((g) => `<li><a href="${g.path}">${esc(g.short || g.name)}</a></li>`).join(""));
-fill("CITIES", CITIES.map(([c]) => `<li><a href="${routeFrom(c)}" target="_blank" rel="noopener">${ico("i-route")}<span><strong>${esc(cityName(c))}</strong><small>Route planen</small></span></a></li>`).join(""));
+fill("CITIES", CITIES.map(([c], i) => `<li data-reveal style="--d:${(i * 0.07).toFixed(2)}s"><a href="${routeFrom(c)}" target="_blank" rel="noopener">${ico("i-route")}<span><strong>${esc(cityName(c))}</strong><small>Route planen</small></span></a></li>`).join(""));
 
 /* Bento der Startseite */
 const TILES = [
@@ -84,7 +84,7 @@ fill("BENTO", TILES.map(([key, cls, tag, img], i) => {
             ${tag ? `<span class="tile-tag">${tag}</span>` : ""}
             <h3><a class="tile-main" href="${g.path}">${esc(g.short || g.name)}</a></h3>
             <p>${esc(key === "angstpatienten" ? "Ihr erster Termin ist ein reines Beratungsgespräch im Besprechungszimmer: ohne Bohrer, ohne Wertung, auf Augenhöhe." : g.teaser)}</p>
-            <ul class="tile-subs">${subs.map((c) => `<li><a href="${c.path}">${esc(c.name)}</a></li>`).join("")}</ul>
+            <ul class="tile-subs">${subs.map((c, j) => `<li style="--i:${j}"><a href="${c.path}">${esc(c.name)}</a></li>`).join("")}</ul>
             <span class="tile-link" aria-hidden="true">Mehr erfahren${ico("i-arrow")}</span>
           </div>
           ${img ? img3d(img, null, 'class="tile-3d" ') : ""}
@@ -124,6 +124,7 @@ function dentistLd() {
       .concat(CITIES.map(([n, w]) => ({ "@type": "City", "name": n, "sameAs": w })))
       .concat([{ "@type": "AdministrativeArea", "name": "Kreis Groß-Gerau" }]),
     "knowsLanguage": LANGS.map((l) => l[0]),
+    "isAcceptingNewPatients": true,
     "availableService": GROUPS.map((g) => ({ "@type": "MedicalProcedure", "name": g.name, "url": SITE + g.path })),
     "openingHoursSpecification": Object.keys(slots).map((r) => ({ "@type": "OpeningHoursSpecification", "dayOfWeek": slots[r], "opens": r.split("-")[0], "closes": r.split("-")[1] })),
     "potentialAction": { "@type": "ReserveAction", "name": "Online-Terminanfrage", "target": { "@type": "EntryPoint", "urlTemplate": SITE + "termin.html", "inLanguage": "de-DE", "actionPlatform": ["https://schema.org/DesktopWebPlatform", "https://schema.org/MobileWebPlatform"] } }
@@ -178,7 +179,10 @@ function head(o) {
   <meta property="og:image" content="${og}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${esc(o.ogAlt || o.title)}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(o.title)}">
+  <meta name="twitter:description" content="${esc(o.description)}">
   <meta name="twitter:image" content="${og}">
   <meta name="geo.region" content="DE-HE">
   <meta name="geo.placename" content="Mörfelden-Walldorf">
@@ -227,6 +231,96 @@ const heroBg = `
     </div>`;
 
 /* ---------------- Leistungsseiten ---------------- */
+/* Interne Verlinkung: Fachbegriffe im Fließtext verweisen auf die Seite, die sie erklärt (je Ziel einmal pro Seite) */
+const LINK_TERMS = [
+  [["professionelle Zahnreinigung", "Professionelle Zahnreinigung", "Zahnreinigung", "PZR", "Prophylaxe"], "leistungen/zahnreinigung-bleaching/professionelle-zahnreinigung/"],
+  [["Wurzelkanal-Revision", "Revisionsbehandlung"], "leistungen/endodontie/revisionsbehandlung/"],
+  [["Wurzelkanalbehandlung", "Wurzelbehandlung", "Endodontie"], "leistungen/endodontie/"],
+  [["Zahnunfällen", "Zahnunfall", "Zahntrauma"], "leistungen/endodontie/zahnunfall-trauma/"],
+  [["Parodontitis", "Parodontose"], "leistungen/zahnerhalt/parodontose-behandlung/"],
+  [["Füllungstherapie", "Kompositfüllungen", "Kompositfüllung", "Füllungen", "Füllung", "Komposit"], "leistungen/zahnerhalt/fuellungstherapie/"],
+  [["Inlays", "Onlays", "Inlay"], "leistungen/zahnerhalt/inlays-onlays/"],
+  [["Karies", "Zahnerhalt", "Zahnerhaltung"], "leistungen/zahnerhalt/"],
+  [["Knochenaufbau", "Sinuslift"], "leistungen/implantologie/knochenaufbau/"],
+  [["3D-DVT", "3D-Röntgen", "Digitale Volumentomographie", "DVT"], "leistungen/implantologie/3d-roentgen-dvt/"],
+  [["Zahnimplantate", "Zahnimplantat", "Implantate", "Implantat", "Implantologie"], "leistungen/implantologie/"],
+  [["Veneers"], "leistungen/aesthetische-zahnmedizin/veneers/"],
+  [["internes Bleaching", "Walking-Bleach-Technik"], "leistungen/aesthetische-zahnmedizin/internes-bleaching/"],
+  [["Bleaching", "Zahnaufhellung"], "leistungen/zahnreinigung-bleaching/bleaching/"],
+  [["Kronen und Brücken", "Kronen & Brücken", "Teilkrone", "Vollkrone", "Kronen", "Krone", "Brücken", "Brücke"], "leistungen/zahnersatz/kronen-bruecken/"],
+  [["Teilprothesen", "Vollprothesen", "Prothesen", "Prothese"], "leistungen/zahnersatz/zahnprothesen/"],
+  [["4-Jahre-Garantie", "4 Jahre Garantie"], "leistungen/zahnersatz/4-jahre-garantie/"],
+  [["Zahnersatz"], "leistungen/zahnersatz/"],
+  [["Meisterlabor", "Zahntechnikermeisterin", "Praxislabor"], "praxislabor/"],
+  [["Knirscherschiene", "Aufbissschiene", "Zähneknirschen", "Bruxismus"], "leistungen/schienentherapie/knirscherschiene/"],
+  [["CMD", "Kiefergelenke", "Kiefergelenk"], "leistungen/schienentherapie/cmd-kiefergelenk/"],
+  [["Schnarcherschiene", "Protrusionsschiene", "Schnarchen"], "leistungen/schienentherapie/schnarcherschiene/"],
+  [["Aligner"], "leistungen/schienentherapie/aligner/"],
+  [["Sportmundschutz", "Mundschutz"], "leistungen/sportzahnmedizin/individueller-sportschutz/"],
+  [["Dämmerschlaf", "Analgosedierung", "Sedierung"], "leistungen/angstpatienten/daemmerschlaf-sedierung/"],
+  [["Vollnarkose", "Narkose"], "leistungen/angstpatienten/vollnarkose/"],
+  [["Kreidezähne", "MIH"], "leistungen/kinderzahnmedizin/mih-kreidezaehne/"],
+  [["Lückenhalter"], "leistungen/kinderzahnmedizin/lueckenhalter/"],
+  [["Fissurenversiegelung"], "leistungen/kinderzahnmedizin/kinderprophylaxe/"],
+  [["Milchzähne", "Milchzahn", "Kinderzahnmedizin"], "leistungen/kinderzahnmedizin/"],
+  [["Zahnarztangst", "Angstpatienten", "Dentalphobie"], "leistungen/angstpatienten/"]
+];
+/* In einzelnen Bereichen passendere Ziele */
+const LINK_CONTEXT = {
+  kinderzahnmedizin: {
+    "leistungen/angstpatienten/vollnarkose/": "leistungen/kinderzahnmedizin/kindernarkose/",
+    "leistungen/zahnreinigung-bleaching/professionelle-zahnreinigung/": "leistungen/kinderzahnmedizin/kinderprophylaxe/"
+  },
+  "aesthetische-zahnmedizin": {
+    "leistungen/zahnreinigung-bleaching/bleaching/": "leistungen/aesthetische-zahnmedizin/in-office-home-bleaching/",
+    "leistungen/zahnerhalt/fuellungstherapie/": "leistungen/aesthetische-zahnmedizin/aesthetische-kompositfuellungen/",
+    "leistungen/zahnersatz/": "leistungen/aesthetische-zahnmedizin/individualisierter-zahnersatz/"
+  },
+  zahnersatz: { "leistungen/zahnerhalt/inlays-onlays/": "leistungen/zahnersatz/inlays-onlays-labor/" },
+  praxislabor: {
+    "leistungen/zahnerhalt/inlays-onlays/": "praxislabor/inlays-onlays/", "leistungen/zahnersatz/kronen-bruecken/": "praxislabor/kronen-bruecken/",
+    "leistungen/zahnersatz/zahnprothesen/": "praxislabor/prothesen-aller-art/", "leistungen/zahnersatz/4-jahre-garantie/": "praxislabor/4-jahre-qualitaetsgarantie/",
+    "leistungen/zahnersatz/": "praxislabor/implantat-zahnersatz/"
+  }
+};
+const TERM_LIST = LINK_TERMS.flatMap(([terms, target]) => terms.map((t) => [t, target])).sort((a, b) => b[0].length - a[0].length);
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const TERM_RE = TERM_LIST.map(([t, target]) => [new RegExp("(^|[^\\p{L}\\p{N}-])(" + reEsc(esc(t)) + ")(?![\\p{L}\\p{N}-])", "u"), target]);
+const MAX_LINKS = 8;
+const INFO = {};
+GROUPS.forEach((g) => {
+  INFO[g.path] = { name: g.short || g.name, icon: g.icon, desc: g.page.meta.description };
+  g.children.forEach((c) => { INFO[c.path] = { name: c.name, icon: g.icon, desc: c.page.meta.description }; });
+});
+
+function linkify(html, ctx) {
+  if (!html || ctx.used.size >= MAX_LINKS) return html;
+  const store = [];
+  let inLink = 0;
+  const out = html.split(/(<[^>]+>)/).map((part) => {
+    if (part.startsWith("<")) {
+      if (/^<a[\s>]/i.test(part)) inLink++;
+      if (/^<\/a>/i.test(part)) inLink--;
+      return part;
+    }
+    if (inLink) return part;
+    let text = part;
+    for (const [re, base] of TERM_RE) {
+      if (ctx.used.size >= MAX_LINKS) break;
+      const target = (LINK_CONTEXT[ctx.group] || {})[base] || base;
+      if (target === ctx.file || ctx.used.has(target)) continue;
+      const m = text.match(re);
+      if (!m) continue;
+      store.push(`<a class="in-link" href="${target}">${m[2]}</a>`);
+      text = text.slice(0, m.index) + m[1] + "\u0000" + (store.length - 1) + "\u0000" + text.slice(m.index + m[0].length);
+      ctx.used.add(target);
+    }
+    return text;
+  }).join("");
+  return out.replace(/\u0000(\d+)\u0000/g, (m, i) => store[+i]);
+}
+
+const delay = (i, step) => `--d:${Math.min(i * (step || 0.07), 0.5).toFixed(2)}s`;
 function itemParts(it, numbered) {
   const h = numbered ? it.html.replace(/^(<strong>)?\s*(?:\d+|[a-z])\.\s+/, "$1") : it.html;
   const m = h.match(/^<strong>([\s\S]*?)<\/strong>\s*([\s\S]*)$/);
@@ -234,29 +328,37 @@ function itemParts(it, numbered) {
   if (m && !m[2] && !it.desc) return { title: m[1].trim(), body: "", highlight: true };
   return { title: "", body: [h, it.desc].filter(Boolean).join(" ") };
 }
-function renderList(list, nested) {
+function renderList(list, ctx, nested) {
+  const L = (h) => linkify(h, ctx);
   if (list.type === "ol" || list.type === "ol-a") {
     return `<ol class="${nested ? "sub-steps" : "step-list"}">` + list.items.map((it, i) => {
       const p = itemParts(it, true);
-      return `<li class="stp"><span class="stp-num" aria-hidden="true">${list.type === "ol-a" ? String.fromCharCode(97 + i) : i + 1}</span><div class="stp-text">${p.title ? `<p class="feat-title">${p.title}</p>` : ""}${p.body ? `<p>${p.body}</p>` : ""}${it.sub ? renderList(it.sub, true) : ""}</div></li>`;
+      return `<li class="stp"${nested ? "" : ` data-reveal style="${delay(i, 0.09)}"`}><span class="stp-num" aria-hidden="true">${list.type === "ol-a" ? String.fromCharCode(97 + i) : i + 1}</span><div class="stp-text">${p.title ? `<p class="feat-title">${p.title}</p>` : ""}${p.body ? `<p>${L(p.body)}</p>` : ""}${it.sub ? renderList(it.sub, ctx, true) : ""}</div></li>`;
     }).join("") + "</ol>";
   }
-  const parts = list.items.map(itemParts);
-  if (nested) return `<ul class="sub-list">` + list.items.map((it, i) => `<li>${parts[i].title ? `<strong>${parts[i].title}:</strong> ` : ""}${parts[i].body}</li>`).join("") + "</ul>";
-  if (!parts.some((p) => p.title)) return `<ul class="check-list">` + parts.map((p) => `<li>${ico("i-check")}<span>${p.body}</span></li>`).join("") + "</ul>";
+  const parts = list.items.map((it) => itemParts(it));
+  if (nested) return `<ul class="sub-list">` + list.items.map((it, i) => `<li>${parts[i].title ? `<strong>${parts[i].title}:</strong> ` : ""}${L(parts[i].body)}</li>`).join("") + "</ul>";
+  if (!parts.some((p) => p.title)) return `<ul class="check-list">` + parts.map((p, i) => `<li data-reveal style="${delay(i)}">${ico("i-check")}<span>${L(p.body)}</span></li>`).join("") + "</ul>";
   const normal = parts.map((p, i) => (p.highlight ? -1 : i)).filter((i) => i >= 0);
   const wide = normal.length % 2 ? normal[normal.length - 1] : -1;
   return `<ul class="feat-list${list.items.length === 1 ? " is-single" : ""}">` + list.items.map((it, i) => {
     const p = parts[i];
-    return `<li class="feat${p.highlight ? " is-highlight" : ""}${i === wide ? " is-wide" : ""}"><span class="feat-ico" aria-hidden="true">${ico(p.highlight ? "i-globe" : "i-check")}</span><div class="feat-text">${p.title ? `<p class="feat-title">${p.title}</p>` : ""}${p.body ? `<p>${p.body}</p>` : ""}${it.sub ? renderList(it.sub, true) : ""}</div></li>`;
+    return `<li class="feat${p.highlight ? " is-highlight" : ""}${i === wide ? " is-wide" : ""}" data-reveal style="${delay(i)}"><span class="feat-ico" aria-hidden="true">${ico(p.highlight ? "i-globe" : "i-check")}</span><div class="feat-text">${p.title ? `<p class="feat-title">${p.title}</p>` : ""}${p.body ? `<p>${L(p.body)}</p>` : ""}${it.sub ? renderList(it.sub, ctx, true) : ""}</div></li>`;
   }).join("") + "</ul>";
 }
-const renderBlocks = (blocks, leadFirst) => blocks.map((b, i) => b.type === "p" ? `<p${leadFirst && i === 0 ? ' class="svc-lead"' : ""}>${b.html}</p>` : renderList(b)).join("\n          ");
+const renderBlocks = (blocks, ctx, leadFirst) => blocks.map((b, i) => b.type === "p" ? `<p${leadFirst && i === 0 ? ' class="svc-lead"' : ""}>${linkify(b.html, ctx)}</p>` : renderList(b, ctx)).join("\n          ");
 const blocksText = (blocks) => blocks.map((b) => b.type === "p" ? strip(b.html) : b.items.map((it) => strip(it.html + " " + (it.desc || "")) + (it.sub ? " " + it.sub.items.map((s) => strip(s.html)).join(" ") : "")).join(" ")).join(" ");
+const slug = (t) => {
+  const s = strip(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/(faq)/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return s.length > 56 ? s.slice(0, 56).replace(/-[^-]*$/, "") : s;
+};
+const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+const STAND = MONTHS[+TODAY.slice(5, 7) - 1] + " " + TODAY.slice(0, 4);
 
 function h1Html(t) {
   const i = t.indexOf(": ");
-  return i > 0 && i < 90 ? `<span class="h1-kicker">${esc(t.slice(0, i + 1))}</span> ${esc(t.slice(i + 2))}` : esc(t);
+  return i > 0 && i < 90 ? `<span class="h1-kicker">${esc(t.slice(0, i + 1))}</span> <span class="h1-main">${esc(t.slice(i + 2))}</span>` : `<span class="h1-main">${esc(t)}</span>`;
 }
 function chipsFor(g) {
   const k = g.key;
@@ -265,62 +367,101 @@ function chipsFor(g) {
   if (k === "zahnersatz" || k === "praxislabor") return [["i-shield", "4 Jahre Garantie", "auf Zahnersatz aus dem Meisterlabor"], ["i-phone", "", PRAXIS.phone]];
   return [["i-lab", "Meisterlabor im Haus", "Zahnersatz aus einer Hand"], ["i-phone", "", PRAXIS.phone]];
 }
+const sparks = () => [1, 2, 3, 4].map((n) => `<span class="sv-spark k${n}" aria-hidden="true"></span>`).join("");
 
 function servicePage(g, child) {
   const p = child ? child.page : g.page;
   const file = child ? child.path : g.path;
   const name = child ? child.name : (g.short || g.name);
   const url = SITE + file;
+  const og = SITE + "assets/img/og/" + g.key + ".jpg";
   const isAngst = g.key === "angstpatienten";
   const book = "termin.html?leistung=" + g.book;
+  const ctx = { file, group: g.key, used: new Set() };
   const crumbs = [["Startseite", ""]].concat(g.key === "praxislabor" ? [] : [["Leistungen", "leistungen/"]], [[g.short || g.name, g.path]], child ? [[child.name, child.path]] : []);
   const faqTitle = p.faqTitle || "Häufige Fragen";
+
+  /* Inhalte zuerst rendern: dabei entstehen die internen Links */
+  const intro = renderBlocks(p.intro, ctx, true);
+  const ids = new Set(["faq", "termin", "inhalt"]);
+  const secs = p.sections.map((s) => {
+    let id = slug(s.h2) || "abschnitt";
+    while (ids.has(id)) id += "-2";
+    ids.add(id);
+    return { id, h2: s.h2, html: renderBlocks(s.blocks, ctx) };
+  });
+  const faqHtml = p.faq.map((f, i) => `
+              <details class="faq-item"${i === 0 ? " open" : ""} data-reveal style="${delay(i)}">
+                <summary><span>${esc(f.q)}</span>${ico("i-plus", "faq-plus")}</summary>
+                <div class="faq-body">${renderBlocks(f.a, ctx)}</div>
+              </details>`).join("");
+
+  /* Passende Themen: verlinkte Seiten anderer Bereiche, sonst Nachbarseiten */
+  const siblings = [{ name: "Überblick", path: g.path }].concat(g.children);
+  const siblingPaths = new Set(siblings.map((s) => s.path));
+  const related = [...ctx.used].filter((t) => !siblingPaths.has(t) && INFO[t]);
+  siblings.forEach((s) => { if (s.path !== file && !related.includes(s.path) && INFO[s.path]) related.push(s.path); });
+  const rel = related.slice(0, 3);
+
   const specialty = [{ "@type": "MedicalSpecialty", "@id": "https://schema.org/Dentistry", "name": "Zahnmedizin" }];
   if (g.key === "kinderzahnmedizin") specialty.push({ "@type": "MedicalSpecialty", "@id": "https://schema.org/Pediatric", "name": "Kinderzahnmedizin" });
   if (/narkose|sedierung|daemmerschlaf/.test(file)) specialty.push({ "@type": "MedicalSpecialty", "@id": "https://schema.org/Anesthesia", "name": "Anästhesie" });
+  const webpage = {
+    "@type": "MedicalWebPage", "@id": url + "#webpage", "url": url, "name": p.meta.title, "headline": p.h1,
+    "description": p.meta.description, "inLanguage": "de-DE", "isPartOf": { "@id": SITE + "#website" },
+    "about": /garantie|aus-einer-hand|vor-ort|werkstoffe/.test(file) || file === "praxislabor/" ? { "@id": SITE + "#praxis" } : { "@type": "MedicalProcedure", "name": name, "url": url },
+    "specialty": specialty, "audience": { "@type": "PeopleAudience", "geographicArea": { "@type": "AdministrativeArea", "name": "Kreis Groß-Gerau" } },
+    "provider": { "@id": SITE + "#praxis" }, "author": { "@id": SITE + "#praxis" }, "publisher": { "@id": SITE + "#praxis" },
+    "breadcrumb": { "@id": url + "#breadcrumb" }, "datePublished": "2026-11-05", "dateModified": TODAY,
+    "primaryImageOfPage": { "@type": "ImageObject", "url": og, "width": 1200, "height": 630 },
+    "keywords": p.meta.keywords || name + ", Zahnarzt Mörfelden-Walldorf",
+    "significantLink": [...ctx.used].map((t) => SITE + t),
+    "relatedLink": rel.map((t) => SITE + t)
+  };
+  if (!child && g.children.length) webpage.hasPart = g.children.map((c) => ({ "@type": "WebPage", "url": SITE + c.path, "name": c.name }));
   const graph = [
-    dentistLd(),
-    {
-      "@type": "MedicalWebPage", "@id": url + "#webpage", "url": url, "name": p.meta.title, "headline": p.h1,
-      "description": p.meta.description, "inLanguage": "de-DE", "isPartOf": { "@id": SITE + "#website" },
-      "about": /garantie|aus-einer-hand|vor-ort|werkstoffe/.test(file) || file === "praxislabor/" ? { "@id": SITE + "#praxis" } : { "@type": "MedicalProcedure", "name": name },
-      "specialty": specialty, "audience": { "@type": "PeopleAudience", "geographicArea": { "@type": "AdministrativeArea", "name": "Kreis Groß-Gerau" } },
-      "provider": { "@id": SITE + "#praxis" }, "breadcrumb": { "@id": url + "#breadcrumb" }, "dateModified": TODAY
-    },
+    dentistLd(), webpage,
     { "@type": "BreadcrumbList", "@id": url + "#breadcrumb", "itemListElement": crumbs.map((c, i) => ({ "@type": "ListItem", "position": i + 1, "name": c[0], "item": SITE + c[1] })) }
   ];
   if (p.faq.length) graph.push({ "@type": "FAQPage", "@id": url + "#faq", "name": faqTitle, "mainEntity": p.faq.map((f) => ({ "@type": "Question", "name": f.q, "acceptedAnswer": { "@type": "Answer", "text": blocksText(f.a) } })) });
 
-  const siblings = [{ name: "Überblick", path: g.path }].concat(g.children);
   const promise = isAngst ? `
         <div class="promise promise-hero">
           <span class="promise-ico" aria-hidden="true">${ico("i-heart")}</span>
           <p><strong>Unser Versprechen:</strong> ${esc(PROMISE.replace(/^Unser Versprechen:\s*/, ""))}</p>
         </div>` : "";
   const chips = chipsFor(g);
+  const toc = secs.length + (p.faq.length ? 1 : 0) >= 2 ? `
+          <nav class="svc-toc" aria-label="Auf dieser Seite" data-reveal>
+            <p class="toc-title">${ico("i-grid")}Auf dieser Seite</p>
+            <ol>${secs.map((s) => `<li><a href="#${s.id}">${esc(s.h2)}</a></li>`).join("")}${p.faq.length ? `<li><a href="#faq">Häufige Fragen</a></li>` : ""}<li><a href="#termin">Termin &amp; Kontakt</a></li></ol>
+          </nav>` : "";
   const subCards = !child && g.children.length ? `
           <nav class="svc-topics" aria-label="Themen: ${esc(g.short || g.name)}">
             <p class="eyebrow"><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Themen in diesem Bereich</p>
             <div class="topic-grid">${g.children.map((c, i) => `
-              <a class="topic-card" href="${c.path}" style="--d:${i * 60}ms"><span class="topic-ico">${ico(g.icon)}</span><span class="topic-txt"><strong>${esc(c.name)}</strong><small>${esc(c.page.meta.description)}</small></span>${ico("i-arrow", "topic-go")}</a>`).join("")}
+              <a class="topic-card" href="${c.path}" data-reveal style="${delay(i)}"><span class="topic-ico">${ico(g.icon)}</span><span class="topic-txt"><strong>${esc(c.name)}</strong><small>${esc(c.page.meta.description)}</small></span>${ico("i-arrow", "topic-go")}</a>`).join("")}
             </div>
           </nav>` : "";
-  const sections = p.sections.map((s) => `
-          <section class="svc-sec">
-            <h2>${esc(s.h2)}</h2>
-          ${renderBlocks(s.blocks)}
+  const sections = secs.map((s) => `
+          <section class="svc-sec" id="${s.id}">
+            <h2 data-reveal>${esc(s.h2)}</h2>
+          ${s.html}
           </section>`).join("");
   const faq = p.faq.length ? `
           <section class="svc-faq" id="faq" aria-labelledby="faq-title">
             <p class="eyebrow"><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>FAQ · zum Aufklappen</p>
             <h2 id="faq-title">${esc(faqTitle)}</h2>
-            <div class="faq-list" data-faq>${p.faq.map((f, i) => `
-              <details class="faq-item"${i === 0 ? " open" : ""}>
-                <summary><span>${esc(f.q)}</span>${ico("i-plus", "faq-plus")}</summary>
-                <div class="faq-body">${renderBlocks(f.a)}</div>
-              </details>`).join("")}
+            <div class="faq-list" data-faq>${faqHtml}
             </div>
           </section>` : "";
+  const relatedHtml = rel.length ? `
+          <nav class="svc-related" aria-label="Passende Themen">
+            <p class="eyebrow"><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Passende Themen</p>
+            <div class="topic-grid rel-grid">${rel.map((t, i) => `
+              <a class="topic-card" href="${t}" data-reveal style="${delay(i, 0.1)}"><span class="topic-ico">${ico(INFO[t].icon)}</span><span class="topic-txt"><strong>${esc(INFO[t].name)}</strong><small>${esc(INFO[t].desc)}</small></span>${ico("i-arrow", "topic-go")}</a>`).join("")}
+            </div>
+          </nav>` : "";
   const others = GROUPS.filter((x) => x.key !== g.key);
 
   const body = `
@@ -333,7 +474,7 @@ function servicePage(g, child) {
         <h1>${h1Html(p.h1)}</h1>
         <p class="hero-lead">${esc(p.meta.description)}</p>${promise}
         <div class="svc-actions">
-          <a class="btn btn-glow btn-lg svc-call" href="tel:${PRAXIS.tel}">${ico("i-phone")}<span>Jetzt anrufen <b>${PRAXIS.phone}</b></span></a>
+          <a class="btn btn-glow btn-lg svc-call" href="tel:${PRAXIS.tel}">${ico("i-phone", "ring")}<span>Jetzt anrufen <b>${PRAXIS.phone}</b></span></a>
           <a class="btn btn-line btn-lg" href="${book}">${ico("i-calendar")}Online-Termin anfragen</a>
         </div>
         <ul class="hero-trust">
@@ -342,12 +483,12 @@ function servicePage(g, child) {
           <li>${ico("i-globe")}DE · EN · ES · AR</li>
         </ul>
       </div>
-      <div class="svc-visual" aria-hidden="true">
-        <span class="sv-halo"></span><span class="stage-ring sr-1"></span><span class="stage-ring sr-2"></span>
-        <img class="sv-3d" src="assets/img/3d/${g.img}.webp" alt="" width="720" height="720" fetchpriority="high">
-        <span class="sv-icon">${ico(g.icon)}</span>
-        <span class="glass-card sv-chip c1"><span class="gc-icon">${ico(chips[0][0])}</span><span><strong>${esc(chips[0][1])}</strong><small>${esc(chips[0][2])}</small></span></span>
-        <span class="glass-card sv-chip c2"><span class="gc-icon">${ico(chips[1][0])}</span><span><strong data-open-short>Sprechzeiten</strong><small>${esc(chips[1][2])}</small></span></span>
+      <div class="svc-visual">
+        <span class="sv-halo" aria-hidden="true"></span><span class="stage-ring sr-1" aria-hidden="true"></span><span class="stage-ring sr-2" aria-hidden="true"></span>${sparks()}
+        <img class="sv-3d" src="assets/img/3d/${g.img}.webp" alt="3D-Illustration: ${esc(name)} – Zahnarzt Klar Zahn in Mörfelden-Walldorf" width="720" height="720" fetchpriority="high">
+        <span class="sv-icon" aria-hidden="true">${ico(g.icon)}</span>
+        <span class="glass-card sv-chip c1" aria-hidden="true"><span class="gc-icon">${ico(chips[0][0])}</span><span><strong>${esc(chips[0][1])}</strong><small>${esc(chips[0][2])}</small></span></span>
+        <span class="glass-card sv-chip c2" aria-hidden="true"><span class="gc-icon">${ico(chips[1][0])}</span><span><strong data-open-short>Sprechzeiten</strong><small>${esc(chips[1][2])}</small></span></span>
       </div>
     </div>
   </section>
@@ -355,9 +496,10 @@ function servicePage(g, child) {
   <section class="svc-body">
     <div class="container svc-grid">
       <article class="svc-article">
-        <div class="svc-intro">
-          ${renderBlocks(p.intro, true)}
-        </div>${subCards}${sections}${faq}
+        <div class="svc-intro" data-reveal>
+          ${intro}
+        </div>${toc}${subCards}${sections}${faq}${relatedHtml}
+        <p class="svc-meta">${ico("i-tooth-check")}<span>Inhalte: Praxis Klar Zahn · Zahnarzt Mikel Salloum, ${PRAXIS.city} · Stand: ${STAND}</span></p>
       </article>
       <aside class="svc-aside">
         <div class="aside-card aside-call">
@@ -365,7 +507,7 @@ function servicePage(g, child) {
           <p class="aside-kicker">Termin &amp; Beratung</p>
           <a class="aside-phone" href="tel:${PRAXIS.tel}">${PRAXIS.phone}</a>
           ${isAngst ? `<p class="aside-promise">${ico("i-heart")}<span><strong>Unser Versprechen:</strong> ${esc(PROMISE.replace(/^Unser Versprechen:\s*/, ""))}</span></p>` : ""}
-          <a class="btn btn-glow" href="tel:${PRAXIS.tel}">${ico("i-phone")}Jetzt anrufen</a>
+          <a class="btn btn-glow" href="tel:${PRAXIS.tel}">${ico("i-phone", "ring")}Jetzt anrufen</a>
           <a class="btn btn-line" href="${book}">${ico("i-calendar")}Online-Termin</a>
           <a class="aside-mail" href="mailto:${PRAXIS.mail}">${ico("i-mail")}${PRAXIS.mail}</a>
           <p class="aside-addr">${ico("i-pin")}<span>${PRAXIS.street} · ${PRAXIS.zip} ${PRAXIS.city}</span></p>
@@ -378,14 +520,14 @@ function servicePage(g, child) {
     </div>
   </section>
 
-  <section class="svc-contact" aria-labelledby="kontakt-title">
+  <section class="svc-contact" id="termin" aria-labelledby="kontakt-title">
     <div class="container">
-      <div class="sc-card">
+      <div class="sc-card" data-reveal>
         <div class="sc-main">
           <p class="eyebrow"><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Kontakt &amp; Termin</p>
           <h2 id="kontakt-title">Ihr Termin: <em>${esc(name)}</em></h2>
           <p class="sc-lead">${isAngst ? esc(PROMISE) : "Rufen Sie uns an oder fragen Sie Ihren Wunschtermin online an. Wir nehmen uns Zeit, beraten Sie verständlich und transparent."}</p>
-          <a class="sc-phone" href="tel:${PRAXIS.tel}">${ico("i-phone")}${PRAXIS.phone}</a>
+          <a class="sc-phone" href="tel:${PRAXIS.tel}">${ico("i-phone", "ring")}${PRAXIS.phone}</a>
           <div class="sc-actions">
             <a class="btn btn-glow btn-lg" href="tel:${PRAXIS.tel}">${ico("i-phone")}Jetzt anrufen</a>
             <a class="btn btn-line btn-lg" href="${book}">${ico("i-calendar")}Online-Termin</a>
@@ -402,9 +544,9 @@ function servicePage(g, child) {
           <p class="hc-note"><span data-open-status>Termine auch nach Vereinbarung.</span></p>
         </div>
       </div>
-      <div class="sc-area">
-        <p>${ico("i-pin")}<span><strong>${PRAXIS.street}, ${PRAXIS.zip} ${PRAXIS.city}</strong> · für Patientinnen und Patienten aus</span></p>
-        <ul>${CITIES.map(([c]) => `<li><a href="${routeFrom(c)}" target="_blank" rel="noopener">${esc(cityName(c))}</a></li>`).join("")}</ul>
+      <div class="sc-area" data-reveal>
+        <p>${ico("i-pin")}<span><strong>${PRAXIS.street}, ${PRAXIS.zip} ${PRAXIS.city}</strong> · Ihr Zahnarzt für ${esc(name)} – auch für Patientinnen und Patienten aus</span></p>
+        <ul>${CITIES.map(([c], i) => `<li style="--i:${i}"><a href="${routeFrom(c)}" target="_blank" rel="noopener">${esc(cityName(c))}</a></li>`).join("")}</ul>
       </div>
     </div>
   </section>
@@ -418,7 +560,7 @@ function servicePage(g, child) {
 </main>
 `;
   return head({
-    file, title: p.meta.title, description: p.meta.description, keywords: p.meta.keywords,
+    file, title: p.meta.title, description: p.meta.description, keywords: p.meta.keywords, ogAlt: p.h1,
     og: "assets/img/og/" + g.key + ".jpg", bodyClass: "svc" + (isAngst ? " svc-angst" : ""), ld: { "@context": "https://schema.org", "@graph": graph }
   }) + body + foot();
 }
@@ -436,7 +578,9 @@ const overview = head({
   title: "Leistungen | Zahnarzt Klar Zahn Mörfelden-Walldorf",
   description: "Alle Leistungen der Zahnarztpraxis Klar Zahn in Mörfelden-Walldorf: Zahnerhalt, Zahnreinigung, Wurzelbehandlung, Kinderzahnmedizin, Ästhetik, Zahnersatz, Implantologie, Schienen, Sport und Angstpatienten.",
   bodyClass: "svc svc-overview",
-  ld: { "@context": "https://schema.org", "@graph": [dentistLd(), { "@type": "BreadcrumbList", "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Startseite", "item": SITE }, { "@type": "ListItem", "position": 2, "name": "Leistungen", "item": SITE + "leistungen/" }] }] }
+  ld: { "@context": "https://schema.org", "@graph": [dentistLd(),
+    { "@type": "CollectionPage", "@id": SITE + "leistungen/#webpage", "url": SITE + "leistungen/", "name": "Leistungen der Zahnarztpraxis Klar Zahn", "inLanguage": "de-DE", "isPartOf": { "@id": SITE + "#website" }, "about": { "@id": SITE + "#praxis" }, "mainEntity": { "@type": "ItemList", "itemListElement": GROUPS.map((g, i) => ({ "@type": "ListItem", "position": i + 1, "name": g.name, "url": SITE + g.path })) } },
+    { "@type": "BreadcrumbList", "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Startseite", "item": SITE }, { "@type": "ListItem", "position": 2, "name": "Leistungen", "item": SITE + "leistungen/" }] }] }
 }) + `
 <main id="inhalt" class="svc-page">
   <section class="page-hero svc-hero">${heroBg}
@@ -463,7 +607,7 @@ const overview = head({
   <section class="svc-body">
     <div class="container">
       <div class="ov-grid">${GROUPS.map((g, i) => `
-        <article class="ov-card${g.key === "praxislabor" ? " is-lab" : ""}" style="--d:${(i % 3) * 60}ms">
+        <article class="ov-card${g.key === "praxislabor" ? " is-lab" : ""}" data-reveal style="--d:${((i % 3) * 0.08).toFixed(2)}s">
           <div class="ov-head"><span class="topic-ico">${ico(g.icon)}</span><h2><a href="${g.path}">${esc(g.name).replace(/4-Jahre-Garantie/g, "4‑Jahre‑Garantie")}</a></h2></div>
           <p>${esc(g.teaser)}</p>
           <ul>${g.children.map((c) => `<li><a href="${c.path}">${esc(c.name)}${ico("i-arrow")}</a></li>`).join("")}</ul>
@@ -678,16 +822,51 @@ const termin = head({
 write("termin.html", termin);
 console.log("termin.html geschrieben");
 
-/* ---------------- sitemap.xml ---------------- */
+/* ---------------- sitemap.xml (mit Vorschaubildern) ---------------- */
+const ogOf = (p) => { const g = GROUPS.find((x) => p.startsWith(x.path)); return SITE + (g ? "assets/img/og/" + g.key + ".jpg" : "assets/img/og-image.jpg"); };
 const urls = [["", "1.0", "weekly"], ["leistungen/", "0.9", "monthly"]]
   .concat(GROUPS.map((g) => [g.path, "0.9", "monthly"]))
   .concat(GROUPS.flatMap((g) => g.children.map((c) => [c.path, "0.8", "monthly"])))
   .concat([["termin.html", "0.8", "monthly"], ["ratgeber.html", "0.7", "weekly"],
     ["ratgeber.html?artikel=professionelle-zahnreinigung", "0.6", "monthly"], ["ratgeber.html?artikel=angstfrei-im-daemmerschlaf", "0.6", "monthly"], ["ratgeber.html?artikel=implantat-oder-bruecke", "0.6", "monthly"]]);
 fs.writeFileSync(ROOT + "sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(([u, pr, f]) => `  <url><loc>${SITE}${u.replace(/&/g, "&amp;")}</loc><lastmod>${TODAY}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority></url>`).join("\n")}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.map(([u, pr, f]) => `  <url><loc>${SITE}${u.replace(/&/g, "&amp;")}</loc><lastmod>${TODAY}</lastmod><changefreq>${f}</changefreq><priority>${pr}</priority>${/^(leistungen|praxislabor)\//.test(u) || u === "" ? `<image:image><image:loc>${ogOf(u)}</image:loc></image:image>` : ""}</url>`).join("\n")}
 </urlset>
 `);
 console.log("sitemap.xml: " + urls.length + " Adressen");
+
+/* ---------------- 404.html (GitHub Pages zeigt sie für unbekannte Adressen, in jeder Ordnertiefe) ---------------- */
+const notFound = head({
+  file: "404.html", title: "Seite nicht gefunden | Klar Zahn Mörfelden-Walldorf",
+  description: "Diese Seite gibt es nicht (mehr). Zur Startseite, zu allen Leistungen oder direkt anrufen: 06105 23604.",
+  extraHead: `
+  <base href="${SITE}">`
+}).replace('<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">', '<meta name="robots" content="noindex, follow">').replace(/\s*<link rel="canonical"[^>]*>/, "") + `
+<main id="inhalt" class="svc-page">
+  <section class="page-hero">${heroBg}
+    <div class="container page-hero-inner">
+      <div>
+        <p class="badge"><span class="badge-dot"></span>Fehler 404</p>
+        <h1>Diese Seite gibt es <em>nicht (mehr)</em></h1>
+        <p class="hero-lead">Vielleicht hilft Ihnen einer dieser Links weiter, oder rufen Sie uns an: ${PRAXIS.phone}.</p>
+        <div class="svc-actions">
+          <a class="btn btn-glow btn-lg" href="index.html">Zur Startseite</a>
+          <a class="btn btn-line btn-lg" href="leistungen/">Alle Leistungen</a>
+          <a class="btn btn-line btn-lg" href="tel:${PRAXIS.tel}">${ico("i-phone", "ring")}Jetzt anrufen</a>
+        </div>
+      </div>
+      <img class="page-hero-3d" src="assets/img/3d/kids.webp" alt="" aria-hidden="true" width="720" height="720">
+    </div>
+  </section>
+  <section class="svc-more" aria-label="Leistungen">
+    <div class="container">
+      <p class="eyebrow"><svg viewBox="0 0 24 24"><use href="#tooth"/></svg>Unsere Leistungen</p>
+      <div class="more-chips">${GROUPS.map((x) => `<a href="${x.path}">${ico(x.icon)}${esc(x.short || x.name)}</a>`).join("")}</div>
+    </div>
+  </section>
+</main>
+` + foot();
+fs.writeFileSync(ROOT + "404.html", img3dPage(notFound).replace(/\n[ \t]+/g, "\n"));
+console.log("404.html geschrieben");
 module.exports = { GROUPS };

@@ -1,4 +1,4 @@
-# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 7)
+# Site Klar Zahn – Zahnmedizin & Zahntechnik (version 8)
 
 Site statique (HTML/CSS/JS, sans framework) pour le cabinet dentaire de Mikel Salloum,
 Opelstraße 2, 64546 Mörfelden-Walldorf. En allemand.
@@ -24,7 +24,10 @@ Les adresses suivent exactement les « URL-Slugs » du document du client (ex. `
 - Contenu en cartes (listes), étapes numérotées, FAQ dépliables.
 - À droite (ordinateur) : carte d'appel + navigation de la rubrique. En bas : bloc contact (téléphone, rendez-vous, e-mail, itinéraire, horaires avec statut « Jetzt geöffnet »), villes desservies, langues parlées.
 - Barre mobile fixe « Jetzt anrufen | Termin | Route ».
-- Données structurées : `Dentist` (avec `MedicalSpecialty`, `areaServed`, `knowsLanguage`), `MedicalWebPage`, `BreadcrumbList`, `FAQPage`.
+- Données structurées : `Dentist` (avec `MedicalSpecialty`, `areaServed`, `knowsLanguage`, `isAcceptingNewPatients`), `MedicalWebPage` (auteur, dates, pages liées), `BreadcrumbList`, `FAQPage`.
+- SEO : sommaire « Auf dieser Seite » avec ancres, liens internes automatiques dans le texte (liste `LINK_TERMS`
+  dans `tools/pages.js`, 8 liens max. par page), bloc « Passende Themen », ligne « Stand » (date de mise à jour).
+  `sitemap.xml` contient les images de partage ; `404.html` (noindex) renvoie vers les rubriques.
 - Rubrique Angstpatienten : la phrase « Unser Versprechen: … » est mise en avant en haut de page, dans la carte d'appel et dans le bloc contact.
 
 ## Modifier
@@ -71,6 +74,9 @@ Vraies photos du cabinet et du docteur : à ajouter dès qu'elles sont disponibl
   désactivées ou limitées au survol, pas de flou sur les éléments animés, 3D en direct seulement sur
   ordinateur (souris, écran ≥ 900 px), polices de secours aux mêmes dimensions (pas de saut à l'affichage),
   CSS réduit automatiquement par PurgeCSS (`npm run build`), HTML des pages générées allégé.
+- Animations (bloc « Version 14 » de `assets/style.css`) : uniquement `transform`/`opacity`, désactivées si
+  « réduire les animations » est activé sur l'appareil. Pas d'animation SVG en boucle (coût à chaque image) :
+  l'icône téléphone sonne 2 fois après le chargement, puis au survol.
 
 ## Aperçu local
 Les pages de prestations utilisent des adresses de dossier (`leistungen/zahnerhalt/`) : lancer un petit serveur local,

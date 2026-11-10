@@ -112,7 +112,12 @@ add_action('wp_head', function () {
 		}
 		echo '<meta property="og:url" content="' . esc_url($url) . '">' . "\n";
 		echo '<meta property="og:image" content="' . esc_url(kz_og_image()) . '">' . "\n";
+		echo '<meta property="og:image:alt" content="' . esc_attr(is_singular() ? get_the_title() : $title) . '">' . "\n";
 		echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+		echo '<meta name="twitter:title" content="' . esc_attr($title) . '">' . "\n";
+		if ($desc !== '') {
+			echo '<meta name="twitter:description" content="' . esc_attr($desc) . '">' . "\n";
+		}
 	}
 
 	/* Strukturierte Daten der Seite (aus data/pages.json) */
